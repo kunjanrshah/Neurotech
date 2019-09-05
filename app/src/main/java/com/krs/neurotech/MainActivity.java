@@ -58,62 +58,21 @@ public class MainActivity extends AppCompatActivity {
         binding.edtDisplay1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
                     if (!hasFocus) {
                         String display1 = binding.edtDisplay1.getText().toString().trim();
-                        display1 = Integer.toString(Integer.valueOf(display1), 16);
-                        display1 = display1.toUpperCase();
-                        StringBuilder result = new StringBuilder();
-                        if (display1.length() != 4) {
-                            int len = display1.length();
-                            len = 4 - len;
-                            for (int i = 0; i < len; i++) {
-                                result.append("0");
-                            }
-                            result.append(display1);
-                            result.insert(2, " ");
-                        }
-                        String fcode = " 06";
-                        String index = " 00 01 ";
-                        String str = id + fcode + index + result;
-
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
+                        sendDisplayMsg(display1,"01");
                     }
-                }
             }
         });
 
         binding.edtDisplay2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
                     if (!hasFocus) {
                         String display2 = binding.edtDisplay2.getText().toString().trim();
-                        display2 = Integer.toString(Integer.valueOf(display2), 16);
-                        display2 = display2.toUpperCase();
-                        StringBuilder result = new StringBuilder();
-                        if (display2.length() != 4) {
-                            int len = display2.length();
-                            len = 4 - len;
-                            for (int i = 0; i < len; i++) {
-                                result.append("0");
-                            }
-                            result.append(display2);
-                            result.insert(2, " ");
-                        }
-                        String fcode = " 06";
-                        String index = " 00 02 ";
-                        String str = id + fcode + index + result;
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
+                        sendDisplayMsg(display2,"02");
                     }
-                }
+
             }
         });
 
@@ -121,27 +80,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!hasFocus) {
                         String display3 = binding.edtDisplay3.getText().toString().trim();
-                        display3 = Integer.toString(Integer.valueOf(display3), 16);
-                        display3 = display3.toUpperCase();
-                        StringBuilder result = new StringBuilder();
-                        if (display3.length() != 4) {
-                            int len = display3.length();
-                            len = 4 - len;
-                            for (int i = 0; i < len; i++) {
-                                result.append("0");
-                            }
-                            result.append(display3);
-                            result.insert(2, " ");
-                        }
-                        String fcode = " 06";
-                        String index = " 00 03 ";
-                        String str = id + fcode + index + result;
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
-                    }
+                        sendDisplayMsg(display3,"03");
                 }
             }
         });
@@ -149,60 +89,28 @@ public class MainActivity extends AppCompatActivity {
         binding.edtDisplay4.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
                     if (!hasFocus) {
                         String display4 = binding.edtDisplay4.getText().toString().trim();
-                        display4 = Integer.toString(Integer.valueOf(display4), 16);
-                        display4 = display4.toUpperCase();
-                        StringBuilder result = new StringBuilder();
-                        if (display4.length() != 4) {
-                            int len = display4.length();
-                            len = 4 - len;
-                            for (int i = 0; i < len; i++) {
-                                result.append("0");
-                            }
-                            result.append(display4);
-                            result.insert(2, " ");
-                        }
-                        String fcode = " 06";
-                        String index = " 00 04 ";
-                        String str = id + fcode + index + result;
-
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
+                        sendDisplayMsg(display4,"04");
                     }
-                }
             }
         });
 
         binding.edtDisplay5.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
                     if (!hasFocus) {
-
                         String display5 = binding.edtDisplay5.getText().toString().trim();
-                        display5 = Integer.toString(Integer.valueOf(display5), 16);
-                        display5 = display5.toUpperCase();
-                        StringBuilder result = new StringBuilder();
-                        if (display5.length() != 4) {
-                            int len = display5.length();
-                            len = 4 - len;
-                            for (int i = 0; i < len; i++) {
-                                result.append("0");
-                            }
-                            result.append(display5);
-                            result.insert(2, " ");
-                        }
-                        String fcode = " 06";
-                        String index = " 00 05 ";
-                        String str = id + fcode + index + result;
-
-                        if (null != clientThread) {
-                            clientThread.sendMessage(str);
-                        }
+                        sendDisplayMsg(display5,"05");
                     }
+            }
+        });
+
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != clientThread) {
+                    clientThread.sendMessage("");
                 }
             }
         });
@@ -210,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         binding.btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // if (null != clientThread) {
                 //clientThread.sendMessage("Disconnect");
                 /*if(clientThread.socket!=null)
@@ -222,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     /*if (!clientThread.socket.isClosed()) {
                         clientThread.socket.close();
                     }*/
-
+                    clientThread = new ClientThread();
+                    thread = new Thread(clientThread);
                     thread.start();
                     binding.btnConnect.setEnabled(false);
                 } catch (Exception e) {
@@ -243,17 +153,6 @@ public class MainActivity extends AppCompatActivity {
                  //   clientThread = null;
                // }
                 thread.start();*/
-
-
-            }
-        });
-
-        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != clientThread) {
-                    clientThread.sendMessage("");
-                }
             }
         });
 
@@ -263,11 +162,33 @@ public class MainActivity extends AppCompatActivity {
         binding.btnConnect.setEnabled(false);
     }
 
+    private void sendDisplayMsg(String display,String num)
+    {
+        display = Integer.toString(Integer.valueOf(display), 16);
+        display = display.toUpperCase();
+        StringBuilder result = new StringBuilder();
+        if (display.length() != 4) {
+            int len = display.length();
+            len = 4 - len;
+            for (int i = 0; i < len; i++) {
+                result.append("0");
+            }
+            result.append(display);
+            result.insert(2, " ");
+        }
+        String fcode = " 06";
+        String index = " 00 "+num+" ";
+        String str = id + fcode + index + result;
+
+        if (null != clientThread) {
+            clientThread.sendMessage(str);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (null != clientThread) {
-            //clientThread.sendMessage("Disconnect");
             clientThread = null;
         }
     }
@@ -293,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.print(message);
                     System.out.flush();
                     Log.e(TAG, "message from server: " + message);
-                    //showMessage(message, clientTextColor);
                 }
 
 
