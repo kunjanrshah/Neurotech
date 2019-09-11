@@ -1,18 +1,23 @@
 package com.krs.neurotech;
 
+import android.app.Dialog;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.krs.neurotech.databinding.ActivityMainBinding;
 
 import java.io.BufferedWriter;
@@ -37,38 +42,49 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // DataBindingUtil.setContentView(this,R.layout.activity_main);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setTitle("NeuroTech Computer Systems");
 
-        binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-        binding.edtId.addTextChangedListener(new TextWatcher() {
+        binding.imgchange.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onClick(View v) {
 
-            }
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.custom_dialog);
+                dialog.setTitle("NeuroTech");
+                dialog.setCancelable(false);
+                final EditText edit_id = dialog.findViewById(R.id.custom_edit_id);
+                edit_id.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                edit_id.setSelection(edit_id.getText().length());
+                MaterialButton btnCancel = (MaterialButton) dialog.findViewById(R.id.btnCancel);
+                MaterialButton btnOk = (MaterialButton) dialog.findViewById(R.id.btnOk);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
 
-                }
-            }
+                btnOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                        String str = edit_id.getText().toString().trim();
+                        setId(str);
+                        dialog.dismiss();
 
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
 
-        binding.edtDisplay1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        binding.edtDisplay2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        binding.edtDisplay3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        binding.edtDisplay4.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        binding.edtDisplay5.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-
-        // binding.edtDisplay5.
-
+        binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        binding.edtId.setSelection(binding.edtId.getText().length());
         binding.edtId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -80,7 +96,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.edtId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    setId(s.toString());
+                }
+            }
+        });
+
+
+        binding.edtDisplay1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay1.setSelection(binding.edtDisplay1.getText().length());
         binding.edtDisplay1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -90,7 +127,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.edtDisplay1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    sendDisplayMsg(s.toString(), "01");
+                }
+            }
+        });
+
+
+        binding.edtDisplay2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay2.setSelection(binding.edtDisplay2.getText().length());
         binding.edtDisplay2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -101,7 +159,28 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        binding.edtDisplay2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    sendDisplayMsg(s.toString(), "02");
+                }
+            }
+        });
+
+
+        binding.edtDisplay3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay3.setSelection(binding.edtDisplay3.getText().length());
         binding.edtDisplay3.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -111,7 +190,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.edtDisplay3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    sendDisplayMsg(s.toString(), "03");
+                }
+            }
+        });
+
+
+        binding.edtDisplay4.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay4.setSelection(binding.edtDisplay4.getText().length());
         binding.edtDisplay4.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -121,16 +221,57 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.edtDisplay4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    sendDisplayMsg(s.toString(), "04");
+                }
+            }
+        });
+
+
+        binding.edtDisplay5.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay5.setSelection(binding.edtDisplay5.getText().length());
         binding.edtDisplay5.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display5 = binding.edtDisplay5.getText().toString().trim();
                     sendDisplayMsg(display5, "05");
+                    hideKeyboard(binding.edtDisplay5);
                 }
             }
         });
+        binding.edtDisplay5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() != 0) {
+                    sendDisplayMsg(s.toString(), "05");
+                }
+            }
+        });
+
 
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +326,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager manager = (InputMethodManager) view.getContext()
+                .getSystemService(INPUT_METHOD_SERVICE);
+        if (manager != null)
+            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void setId(String str_id) {
 
         try {
@@ -209,26 +357,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendDisplayMsg(String display, String num) {
         try {
-            display = display.replace(".", "");
-            display = Integer.toString(Integer.valueOf(display), 16);
-            display = display.toUpperCase();
-            StringBuilder result = new StringBuilder();
-            if (display.length() != 4) {
-                int len = display.length();
-                len = 4 - len;
-                for (int i = 0; i < len; i++) {
-                    result.append("0");
+            if (!display.isEmpty()) {
+                display = display.replaceAll(".", "");
+                display = Integer.toString(Integer.valueOf(display), 16);
+                display = display.toUpperCase();
+                StringBuilder result = new StringBuilder();
+                if (display.length() != 4) {
+                    int len = display.length();
+                    len = 4 - len;
+                    for (int i = 0; i < len; i++) {
+                        result.append("0");
+                    }
+                    result.append(display);
                 }
-                result.append(display);
                 result.insert(2, " ");
-            }
-            String fcode = " 06";
-            String index = " 00 " + num + " ";
-            String str = ID + fcode + index + result;
+                String fcode = " 06";
+                String index = " 00 " + num + " ";
+                String str = ID + fcode + index + result;
 
-            if (null != clientThread) {
-                clientThread.sendMessage(str);
+                if (null != clientThread) {
+                    clientThread.sendMessage(str);
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

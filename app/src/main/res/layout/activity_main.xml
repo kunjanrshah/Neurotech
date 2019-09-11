@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/ll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/ll_parent"
         android:orientation="vertical">
 
         <ScrollView
@@ -46,13 +47,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
+                        android:layout_weight="1"
                         android:gravity="right|center"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display1"
-                        android:text="0000"
+                        android:hint="0000"
                         android:textColor="@color/colorPrimary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/imgchange"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="22dp"
+                        android:background="@drawable/change"
+                        android:layout_height="25dp" />
 
                 </LinearLayout>
 
@@ -76,17 +85,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display1"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
                         android:gravity="right|center"
+                        android:hint="00.00"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display2"
-                        android:text="@string/_00_00"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:met_mask="##.##" />
 
                 </LinearLayout>
 
@@ -110,17 +120,19 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display2"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
-                        android:nextFocusDown="@id/edt_display3"
                         android:gravity="right|center"
+                        android:hint="00.00"
                         android:inputType="number"
-                        android:text="@string/_00_00"
+                        android:nextFocusDown="@id/edt_display3"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:met_mask="##.##" />
+
 
                 </LinearLayout>
 
@@ -144,17 +156,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display3"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
                         android:gravity="right|center"
+                        android:hint="00.00"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display4"
-                        android:text="@string/_00_00"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:met_mask="##.##" />
 
                 </LinearLayout>
 
@@ -178,17 +191,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display4"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:nextFocusDown="@id/edt_display5"
                         android:background="@null"
                         android:gravity="right|center"
+                        android:hint="00.00"
                         android:inputType="number"
-                        android:text="@string/_00_00"
+                        android:nextFocusDown="@id/edt_display5"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:met_mask="##.##" />
 
                 </LinearLayout>
 
@@ -197,6 +211,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/my_custom_background"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"
                     android:paddingTop="5dp"
@@ -211,17 +226,20 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <EditText
+                    <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display5"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
+                        android:imeOptions="actionNext"
                         android:gravity="right|center"
+                        android:hint="00.00"
                         android:inputType="number"
                         android:nextFocusDown="@id/btn_submit"
-                        android:text="@string/_00_00"
                         android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:met_mask="##.##" />
+
 
                 </LinearLayout>
 
@@ -232,21 +250,21 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_connect"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:layout_height="65dp"
                         android:text="Connect"
+                        app:backgroundTint="@color/colorPrimary"
                         android:textSize="20sp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_submit"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="65dp"
                         android:layout_marginLeft="30dp"
-                        android:padding="20dp"
                         android:text="Submit"
+                        app:backgroundTint="@color/colorPrimary"
                         android:textSize="20sp" />
 
                 </LinearLayout>
