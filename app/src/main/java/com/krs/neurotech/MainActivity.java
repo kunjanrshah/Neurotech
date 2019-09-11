@@ -1,10 +1,17 @@
 package com.krs.neurotech;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.krs.neurotech.databinding.ActivityMainBinding;
 
@@ -25,31 +32,50 @@ public class MainActivity extends AppCompatActivity {
     private ClientThread clientThread;
     private Thread thread;
     private String TAG = MainActivity.class.getSimpleName();
-    private String id = "";
+    private String ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // DataBindingUtil.setContentView(this,R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setTitle("NeuroTech Computer Systems");
+
+        binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        binding.edtId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        binding.edtDisplay1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay4.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        binding.edtDisplay5.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        // binding.edtDisplay5.
 
         binding.edtId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    id = binding.edtId.getText().toString().trim();
-                    id = Integer.toString(Integer.valueOf(id), 16);
-                    id = id.toUpperCase();
-                    if (id.length() == 1) {
-                        id = "0" + id;
-                    }
-                    String fcode = " 03";
-                    String sadd = " 00 00";
-                    String eadd = " 00 06";
-                    String str = id + fcode + sadd + eadd;
-                    if (null != clientThread) {
-                        clientThread.sendMessage(str);
+                    String str_id = binding.edtId.getText().toString().trim();
+                    if (str_id.length() != 0) {
+                        setId(str_id);
                     }
                 }
             }
@@ -58,20 +84,20 @@ public class MainActivity extends AppCompatActivity {
         binding.edtDisplay1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String display1 = binding.edtDisplay1.getText().toString().trim();
-                        sendDisplayMsg(display1,"01");
-                    }
+                if (!hasFocus) {
+                    String display1 = binding.edtDisplay1.getText().toString().trim();
+                    sendDisplayMsg(display1, "01");
+                }
             }
         });
 
         binding.edtDisplay2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String display2 = binding.edtDisplay2.getText().toString().trim();
-                        sendDisplayMsg(display2,"02");
-                    }
+                if (!hasFocus) {
+                    String display2 = binding.edtDisplay2.getText().toString().trim();
+                    sendDisplayMsg(display2, "02");
+                }
 
             }
         });
@@ -80,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                        String display3 = binding.edtDisplay3.getText().toString().trim();
-                        sendDisplayMsg(display3,"03");
+                    String display3 = binding.edtDisplay3.getText().toString().trim();
+                    sendDisplayMsg(display3, "03");
                 }
             }
         });
@@ -89,20 +115,20 @@ public class MainActivity extends AppCompatActivity {
         binding.edtDisplay4.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String display4 = binding.edtDisplay4.getText().toString().trim();
-                        sendDisplayMsg(display4,"04");
-                    }
+                if (!hasFocus) {
+                    String display4 = binding.edtDisplay4.getText().toString().trim();
+                    sendDisplayMsg(display4, "04");
+                }
             }
         });
 
         binding.edtDisplay5.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        String display5 = binding.edtDisplay5.getText().toString().trim();
-                        sendDisplayMsg(display5,"05");
-                    }
+                if (!hasFocus) {
+                    String display5 = binding.edtDisplay5.getText().toString().trim();
+                    sendDisplayMsg(display5, "05");
+                }
             }
         });
 
@@ -118,70 +144,93 @@ public class MainActivity extends AppCompatActivity {
         binding.btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // if (null != clientThread) {
-                //clientThread.sendMessage("Disconnect");
-                /*if(clientThread.socket!=null)
-                {
-                    Log.d(TAG,"isConnected: "+clientThread.socket.isConnected());
-                    Log.d(TAG,"get channel: "+clientThread.socket.getChannel().toString());
-                }*/
-
                 try {
-                    /*if (!clientThread.socket.isClosed()) {
-                        clientThread.socket.close();
-                    }*/
-                    clientThread = new ClientThread();
-                    thread = new Thread(clientThread);
-                    thread.start();
-                    binding.btnConnect.setEnabled(false);
+                    if (Utils.checkWifiOnAndConnected(MainActivity.this)) {
+                        clientThread = new ClientThread();
+                        thread = new Thread(clientThread);
+                        thread.start();
+                        binding.btnConnect.setEnabled(false);
+                    } else {
+                        Snackbar snackbar = Snackbar
+                                .make(binding.llParent, "Connect your Wifi First...", Snackbar.LENGTH_LONG)
+                                .setAction("CONNECT", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                    }
+                                });
+                        snackbar.show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                /*try {
-
-                        if (!clientThread.socket.isClosed()) {
-                            clientThread.socket.close();
-                        }
-                        if (thread.isAlive()) {
-                            thread.stop();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                 //   clientThread = null;
-               // }
-                thread.start();*/
             }
         });
 
-        clientThread = new ClientThread();
-        thread = new Thread(clientThread);
-        thread.start();
-        binding.btnConnect.setEnabled(false);
+        if (Utils.checkWifiOnAndConnected(this)) {
+            clientThread = new ClientThread();
+            thread = new Thread(clientThread);
+            thread.start();
+            binding.btnConnect.setEnabled(false);
+        } else {
+            Snackbar snackbar = Snackbar
+                    .make(binding.llParent, "Connect your Wifi First...", Snackbar.LENGTH_LONG)
+                    .setAction("CONNECT", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    });
+            snackbar.show();
+        }
     }
 
-    private void sendDisplayMsg(String display,String num)
-    {
-        display = Integer.toString(Integer.valueOf(display), 16);
-        display = display.toUpperCase();
-        StringBuilder result = new StringBuilder();
-        if (display.length() != 4) {
-            int len = display.length();
-            len = 4 - len;
-            for (int i = 0; i < len; i++) {
-                result.append("0");
-            }
-            result.append(display);
-            result.insert(2, " ");
-        }
-        String fcode = " 06";
-        String index = " 00 "+num+" ";
-        String str = id + fcode + index + result;
+    private void setId(String str_id) {
 
-        if (null != clientThread) {
-            clientThread.sendMessage(str);
+        try {
+            str_id = Integer.toString(Integer.valueOf(str_id), 16);
+            str_id = str_id.toUpperCase();
+            if (str_id.length() == 1) {
+                str_id = "0" + str_id;
+            }
+            String fcode = " 03";
+            String sadd = " 00 00";
+            String eadd = " 00 06";
+            String str = str_id + fcode + sadd + eadd;
+            ID = str_id;
+            if (null != clientThread) {
+                clientThread.sendMessage(str);
+            }
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void sendDisplayMsg(String display, String num) {
+        try {
+            display = display.replace(".", "");
+            display = Integer.toString(Integer.valueOf(display), 16);
+            display = display.toUpperCase();
+            StringBuilder result = new StringBuilder();
+            if (display.length() != 4) {
+                int len = display.length();
+                len = 4 - len;
+                for (int i = 0; i < len; i++) {
+                    result.append("0");
+                }
+                result.append(display);
+                result.insert(2, " ");
+            }
+            String fcode = " 06";
+            String index = " 00 " + num + " ";
+            String str = ID + fcode + index + result;
+
+            if (null != clientThread) {
+                clientThread.sendMessage(str);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

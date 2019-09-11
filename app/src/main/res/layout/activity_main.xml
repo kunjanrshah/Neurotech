@@ -4,6 +4,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/ll_parent"
         android:orientation="vertical">
 
         <ScrollView
@@ -46,7 +47,9 @@
                         android:layout_height="45dp"
                         android:background="@null"
                         android:gravity="right|center"
-                        android:text="001"
+                        android:inputType="number"
+                        android:nextFocusDown="@id/edt_display1"
+                        android:text="0000"
                         android:textColor="@color/colorPrimary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -80,7 +83,8 @@
                         android:background="@null"
                         android:gravity="right|center"
                         android:inputType="number"
-                        android:text="1234"
+                        android:nextFocusDown="@id/edt_display2"
+                        android:text="@string/_00_00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -111,9 +115,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@null"
+                        android:nextFocusDown="@id/edt_display3"
                         android:gravity="right|center"
                         android:inputType="number"
-                        android:text="1234"
+                        android:text="@string/_00_00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -146,7 +151,8 @@
                         android:background="@null"
                         android:gravity="right|center"
                         android:inputType="number"
-                        android:text="1234"
+                        android:nextFocusDown="@id/edt_display4"
+                        android:text="@string/_00_00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -176,10 +182,11 @@
                         android:id="@+id/edt_display4"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:nextFocusDown="@id/edt_display5"
                         android:background="@null"
                         android:gravity="right|center"
                         android:inputType="number"
-                        android:text="1234"
+                        android:text="@string/_00_00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -211,8 +218,8 @@
                         android:background="@null"
                         android:gravity="right|center"
                         android:inputType="number"
-
-                        android:text="1234"
+                        android:nextFocusDown="@id/btn_submit"
+                        android:text="@string/_00_00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
