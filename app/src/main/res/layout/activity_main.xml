@@ -3,29 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:id="@+id/ll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
             android:scrollbars="none">
 
+
             <LinearLayout
+                android:id="@+id/ll_parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="50dp"
                 android:layout_marginEnd="50dp"
                 android:orientation="vertical">
+
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -46,29 +49,29 @@
                         android:id="@+id/edt_id"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@null"
                         android:layout_weight="1"
+                        android:background="@null"
                         android:gravity="right|center"
+                        android:hint="0000"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display1"
-                        android:hint="0000"
                         android:textColor="@color/colorPrimary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/imgchange"
-                        android:layout_marginLeft="20dp"
                         android:layout_width="22dp"
-                        android:background="@drawable/change"
-                        android:layout_height="25dp" />
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/change" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -85,10 +88,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageView
+                        android:id="@+id/imgsend1"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display1"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:layout_weight="1"
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
@@ -103,7 +114,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -120,10 +131,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageView
+                        android:id="@+id/imgsend2"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display2"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:layout_weight="1"
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
@@ -139,7 +158,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -156,10 +175,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageView
+                        android:id="@+id/imgsend3"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display3"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:layout_weight="1"
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
@@ -174,7 +201,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -191,10 +218,18 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageView
+                        android:id="@+id/imgsend4"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display4"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:layout_weight="1"
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
@@ -209,7 +244,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/my_custom_background"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -226,51 +261,61 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageView
+                        android:id="@+id/imgsend5"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display5"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:layout_weight="1"
                         android:background="@null"
-                        android:imeOptions="actionNext"
                         android:gravity="right|center"
                         android:hint="00.00"
+                        android:imeOptions="actionNext"
                         android:inputType="number"
                         android:nextFocusDown="@id/btn_submit"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:met_mask="##.##" />
 
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_connect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="65dp"
-                        android:text="Connect"
-                        app:backgroundTint="@color/colorPrimary"
-                        android:textSize="20sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_submit"
                         android:layout_width="wrap_content"
-                        android:layout_height="65dp"
-                        android:layout_marginLeft="30dp"
-                        android:text="Submit"
-                        app:backgroundTint="@color/colorPrimary"
-                        android:textSize="20sp" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:padding="10dp"
+                        android:text="Save"
+                        android:textSize="20sp"
+                        app:backgroundTint="@color/colorPrimary" />
 
-                </LinearLayout>
 
 
             </LinearLayout>
         </ScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:padding="8dp"
+            android:text="Connet"
+            android:textSize="20sp"
+            app:backgroundTint="@color/colorPrimary" />
+
     </LinearLayout>
+
+
 </layout>

@@ -99,7 +99,7 @@
             android:layout_height="65dp"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
-            android:text="Okay"
+            android:text="Change"
             android:textColor="#fff"
             app:backgroundTint="@color/colorPrimary" />
 
