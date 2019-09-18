@@ -101,6 +101,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.tvId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str_id = binding.edtId.getText().toString().trim();
+                if (str_id.length() != 0) {
+                    setId(str_id);
+                }
+            }
+        });
 
         binding.edtDisplay1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay1.setSelection(Objects.requireNonNull(binding.edtDisplay1.getText()).length());

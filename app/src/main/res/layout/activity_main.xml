@@ -7,12 +7,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:padding="8dp"
+            android:text="Connet"
+            android:textSize="20sp"
+            app:backgroundTint="@color/colorPrimary" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:scrollbars="none">
-
 
             <LinearLayout
                 android:id="@+id/ll_parent"
@@ -22,8 +33,6 @@
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
                 android:orientation="vertical">
-
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -303,17 +312,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_connect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:padding="8dp"
-            android:text="Connet"
-            android:textSize="20sp"
-            app:backgroundTint="@color/colorPrimary" />
 
     </LinearLayout>
 
