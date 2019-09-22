@@ -28,12 +28,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
 import static com.krs.neurotech.Utils.appendZeros;
+import static com.krs.neurotech.Utils.bytesToHex;
 import static com.krs.neurotech.Utils.hexStringToByteArray;
 import static java.lang.String.format;
 
@@ -390,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
 
             byte fcode = 0x06;
             byte raw_id2 = 0x06;
-            byte[] msg2 = new byte[3];
+            byte[] msg2 = new byte[4];
             msg2[0] = fcode;
             msg2[2] = raw_id2;
 
@@ -466,60 +468,45 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 
             try {
-                Log.e(TAG, "server ip: " + SERVER_IP);
+
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
                 socket = new Socket(serverAddr, SERVERPORT);
                 is = new DataInputStream(socket.getInputStream());
                 byte[] buffer = new byte[1024];
                 int read;
-                String message;
+                Log.e(TAG, "server ip: " + SERVER_IP);
+
                 while ((read = is.read(buffer)) != -1) {
-                    message = new String(buffer, 0, read);
-                    System.out.print(message);
-                    System.out.flush();
-                    Log.e(TAG, "message from server: " + message);
-                    // if (RESPONSE == 1) {
-
-                        String msg = message.substring(9, 38);
-
-                        String display1 = msg.substring(0, 5).replace(" ", "");
+                    Log.e(TAG, "message from server: " + bytesToHex(buffer));
+                    String result = bytesToHex(buffer);
+                    Log.e(TAG, "Result: " + result);
+                    Log.e(TAG, "ID: " + ID);
+                    String id = result.substring(0, 2);
+                    String display1 = "", display2 = "", display3 = "", display4 = "", display5 = "";
+                    if (ID.equalsIgnoreCase(id)) {
+                        display1 = result.substring(6, 10);
                         final int d1 = Integer.parseInt(display1, 16);
-
-                        String display2 = msg.substring(6, 11).replace(" ", "");
+                        display2 = result.substring(10, 14);
                         final int d2 = Integer.parseInt(display2, 16);
-
-                        String display3 = msg.substring(12, 17).replace(" ", "");
+                        display3 = result.substring(14, 18);
                         final int d3 = Integer.parseInt(display3, 16);
-
-                        String display4 = msg.substring(18, 23).replace(" ", "");
+                        display4 = result.substring(18, 22);
                         final int d4 = Integer.parseInt(display4, 16);
-
-
-                        String display5 = msg.substring(24, 29).replace(" ", "");
+                        display5 = result.substring(22, 26);
                         final int d5 = Integer.parseInt(display5, 16);
-                    //  RESPONSE = -1;
-
-                        Log.v(TAG, msg);
-                        Log.v(TAG, "" + d1);
-                        Log.v(TAG, "" + d2);
-                        Log.v(TAG, "" + d3);
-                        Log.v(TAG, "" + d4);
-                        Log.v(TAG, "" + d5);
 
                         runOnUiThread(new Runnable() {
-                            @SuppressLint("DefaultLocale")
                             @Override
                             public void run() {
-                                binding.edtDisplay1.setText(String.format("%d", d1));
-                                binding.edtDisplay2.setText(String.format("%d", d2));
-                                binding.edtDisplay3.setText(String.format("%d", d3));
-                                binding.edtDisplay4.setText(String.format("%d", d4));
-                                binding.edtDisplay5.setText(String.format("%d", d5));
+                                binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
+                                binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
+                                binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
+                                binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
+                                binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
                             }
                         });
-
                     }
-                //    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -531,6 +518,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Exception:");
             }
         }
+
 
         void sendMessage(final byte[] message) {
             new Thread(new Runnable() {
