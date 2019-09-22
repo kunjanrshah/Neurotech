@@ -7,15 +7,6 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginLeft="15dp"
-        android:text="NeuroTech"
-        android:textColor="@android:color/black"
-        android:textSize="22sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +35,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:gravity="right|center"
-            android:hint="0000"
+            android:hint="00"
             android:inputType="number"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
@@ -52,6 +43,15 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="15dp"
+        android:text="@string/app_name"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
 
 
     <!-- <com.google.android.material.textfield.TextInputLayout

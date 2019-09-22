@@ -7,7 +7,8 @@ import android.net.wifi.WifiManager;
 class Utils {
 
     static boolean checkWifiOnAndConnected(Context context) {
-        WifiManager wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiMgr = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        assert wifiMgr != null;
         if (wifiMgr.isWifiEnabled()) { // Wi-Fi adapter is ON
             WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
             // Not connected to an access point
@@ -15,6 +16,31 @@ class Utils {
         } else {
             return false; // Wi-Fi adapter is OFF
         }
+    }
+
+    static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    static String appendZeros(String str, int count) {
+        StringBuilder result_id = new StringBuilder();
+        if (str.length() != count) {
+            int len = str.length();
+            len = count - len;
+            for (int i = 0; i < len; i++) {
+                result_id.append("0");
+            }
+            result_id.append(str);
+        } else {
+            result_id.append(str);
+        }
+        return result_id.toString();
     }
 
 }

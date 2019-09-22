@@ -22,27 +22,29 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.krs.neurotech.databinding.ActivityMainBinding;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
+import static com.krs.neurotech.Utils.appendZeros;
+import static com.krs.neurotech.Utils.hexStringToByteArray;
 import static java.lang.String.format;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SERVERPORT = 1234;
+    private final int SERVERPORT = 1234;
+    private final String SERVER_IP = "192.168.4.1";
     ActivityMainBinding binding = null;
+    //int RESPONSE = -1;
     private ClientThread clientThread;
     private String TAG = MainActivity.class.getSimpleName();
-    int RESPONSE = -1;
     private String ID = "01";
 
     @Override
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        setTitle("NeuroTech");
+        setTitle(getResources().getString(R.string.neurotech));
 
         binding.imgchange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
                 final Dialog dialog = new Dialog(MainActivity.this);
                 dialog.setContentView(R.layout.custom_dialog);
-                dialog.setTitle("NeuroTech");
+                dialog.setTitle(getResources().getString(R.string.neurotech));
                 dialog.setCancelable(false);
                 final EditText edit_id = dialog.findViewById(R.id.custom_edit_id);
-                edit_id.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                edit_id.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
                 edit_id.setSelection(edit_id.getText().length());
                 MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
                 MaterialButton btnOk = dialog.findViewById(R.id.btnOk);
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         binding.edtId.setSelection(binding.edtId.getText().length());
         binding.edtId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display1 = binding.edtDisplay1.getText().toString().trim();
-                    sendDisplayMsg(display1, "01");
+                    sendDisplayMsg(display1, (byte) 0x01);
                 }
             }
         });
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String display1 = binding.edtDisplay1.getText().toString().trim();
-                sendDisplayMsg(display1, "01");
+                sendDisplayMsg(display1, (byte) 0x01);
             }
         });
 
@@ -138,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display2 = binding.edtDisplay2.getText().toString().trim();
-                    sendDisplayMsg(display2, "02");
+                    sendDisplayMsg(display2, (byte) 0x02);
                 }
 
             }
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String display2 = binding.edtDisplay2.getText().toString().trim();
-                sendDisplayMsg(display2, "02");
+                sendDisplayMsg(display2, (byte) 0x02);
             }
         });
 
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display3 = binding.edtDisplay3.getText().toString().trim();
-                    sendDisplayMsg(display3, "03");
+                    sendDisplayMsg(display3, (byte) 0x03);
                 }
             }
         });
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String display3 = binding.edtDisplay3.getText().toString().trim();
-                sendDisplayMsg(display3, "03");
+                sendDisplayMsg(display3, (byte) 0x03);
             }
         });
 
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display4 = binding.edtDisplay4.getText().toString().trim();
-                    sendDisplayMsg(display4, "04");
+                    sendDisplayMsg(display4, (byte) 0x04);
                 }
             }
         });
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String display4 = binding.edtDisplay4.getText().toString().trim();
-                sendDisplayMsg(display4, "04");
+                sendDisplayMsg(display4, (byte) 0x04);
             }
         });
 
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String display5 = binding.edtDisplay5.getText().toString().trim();
-                    sendDisplayMsg(display5, "05");
+                    sendDisplayMsg(display5, (byte) 0x05);
                     hideKeyboard(binding.edtDisplay5);
                 }
             }
@@ -208,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String display5 = binding.edtDisplay5.getText().toString().trim();
-                sendDisplayMsg(display5, "05");
+                sendDisplayMsg(display5, (byte) 0x05);
             }
         });
 
@@ -310,17 +312,27 @@ public class MainActivity extends AppCompatActivity {
         try {
             str_id = Integer.toString(Integer.valueOf(str_id), 16);
             str_id = str_id.toUpperCase();
-            if (str_id.length() == 1) {
-                str_id = "0" + str_id;
-            }
-            String fcode = " 03";
-            String sadd = " 00 00";
-            String eadd = " 00 06";
-            String str = str_id + fcode + sadd + eadd;
-            ID = str_id;
+            String result_id = appendZeros(str_id, 2);
+
+            byte fcode = 0x03;
+            byte eadd2 = 0x06;
+
+            byte[] msg1 = hexStringToByteArray(result_id);
+
+            byte[] msg2 = new byte[5];
+            msg2[0] = fcode;
+            msg2[4] = eadd2;
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(msg1);
+            outputStream.write(msg2);
+
+            byte[] msg = outputStream.toByteArray();
+
+            ID = result_id;
             if (null != clientThread) {
-                clientThread.sendMessage(str);
-                RESPONSE = 1;
+                clientThread.sendMessage(msg);
+                // RESPONSE = 1;
             }
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -329,17 +341,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void save() {
-        String fcode = " 06";
-        String raw_id = " 00 07";
-        String data1 = " 00 ";
-        String str = ID + fcode + raw_id + data1 + ID;
+        byte fcode = 0x06;
+        byte raw_id2 = 0x07;
+        byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
+        byte[] msg2 = new byte[4];
+        msg2[0] = fcode;
+        msg2[2] = raw_id2;
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            outputStream.write(msg1);
+            outputStream.write(msg2);
+            outputStream.write(msg1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        byte[] msg = outputStream.toByteArray();
 
         if (null != clientThread) {
-            clientThread.sendMessage(str);
+            clientThread.sendMessage(msg);
             final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
             alertDialog.setCancelable(false);
-            alertDialog.setTitle("NeuroTech");
-            alertDialog.setMessage("Loading...");
+            alertDialog.setTitle(getResources().getString(R.string.neurotech));
+            alertDialog.setMessage(getResources().getString(R.string.loading));
             alertDialog.show();
             new Handler().postDelayed(new Runnable() {
                 @SuppressLint("DefaultLocale")
@@ -361,21 +386,30 @@ public class MainActivity extends AppCompatActivity {
         try {
             String new_id = Integer.toString(Integer.valueOf(str_id), 16);
             new_id = new_id.toUpperCase();
-            if (new_id.length() == 1) {
-                new_id = "0" + new_id;
-            }
-            String fcode = " 06";
-            String raw_id = " 00 06";
-            String data1 = " 00 ";
-            String str = ID + fcode + raw_id + data1 + new_id;
+            new_id = appendZeros(new_id, 2);
+
+            byte fcode = 0x06;
+            byte raw_id2 = 0x06;
+            byte[] msg2 = new byte[3];
+            msg2[0] = fcode;
+            msg2[2] = raw_id2;
+
+            byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
+            byte[] msg3 = hexStringToByteArray(new_id);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(msg1);
+            outputStream.write(msg2);
+            outputStream.write(msg3);
+            byte[] msg = outputStream.toByteArray();
 
             if (null != clientThread) {
-                clientThread.sendMessage(str);
+                clientThread.sendMessage(msg);
                 ID = new_id;
                 final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
                 alertDialog.setCancelable(false);
-                alertDialog.setTitle("NeuroTech");
-                alertDialog.setMessage("Loading...");
+                alertDialog.setTitle(getResources().getString(R.string.neurotech));
+                alertDialog.setMessage(getResources().getString(R.string.loading));
                 alertDialog.show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -392,34 +426,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendDisplayMsg(String display, String num) {
+    private void sendDisplayMsg(String display, byte num) {
         try {
             if (!display.isEmpty()) {
                 display = display.replace(".", "");
                 display = Integer.toString(Integer.valueOf(display), 16);
                 display = display.toUpperCase();
-                StringBuilder result = new StringBuilder();
-                if (display.length() != 4) {
-                    int len = display.length();
-                    len = 4 - len;
-                    for (int i = 0; i < len; i++) {
-                        result.append("0");
-                    }
-                    result.append(display);
-                } else {
-                    result.append(display);
-                }
-                result.insert(2, " ");
+                String result = appendZeros(display, 4);
 
-                String fcode = " 06";
-                String index = " 00 " + num + " ";
-                String str = ID + fcode + index + result;
+                byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
+                byte fcode = 0x06;
+                byte[] msg2 = new byte[3];
+                msg2[0] = fcode;
+                msg2[2] = num;
+                byte[] msg3 = hexStringToByteArray(result);
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                outputStream.write(msg1);
+                outputStream.write(msg2);
+                outputStream.write(msg3);
+
+                byte[] msg = outputStream.toByteArray();
 
                 if (null != clientThread) {
-                    clientThread.sendMessage(str);
+                    clientThread.sendMessage(msg);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -428,18 +460,16 @@ public class MainActivity extends AppCompatActivity {
     private class ClientThread implements Runnable {
 
         private Socket socket;
-        private InputStream is;
+        private DataInputStream is;
 
         @Override
         public void run() {
 
             try {
-                //192.168.43.95
-                String SERVER_IP = "192.168.4.1";//192.168.1.103  //
                 Log.e(TAG, "server ip: " + SERVER_IP);
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
                 socket = new Socket(serverAddr, SERVERPORT);
-                is = socket.getInputStream();
+                is = new DataInputStream(socket.getInputStream());
                 byte[] buffer = new byte[1024];
                 int read;
                 String message;
@@ -448,9 +478,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.print(message);
                     System.out.flush();
                     Log.e(TAG, "message from server: " + message);
-
-
-                    if (RESPONSE == 1) {
+                    // if (RESPONSE == 1) {
 
                         String msg = message.substring(9, 38);
 
@@ -469,7 +497,7 @@ public class MainActivity extends AppCompatActivity {
 
                         String display5 = msg.substring(24, 29).replace(" ", "");
                         final int d5 = Integer.parseInt(display5, 16);
-                        RESPONSE = -1;
+                    //  RESPONSE = -1;
 
                         Log.v(TAG, msg);
                         Log.v(TAG, "" + d1);
@@ -491,29 +519,7 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                     }
-
-                }
-
-
-            } catch (UnknownHostException e1) {
-                e1.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.btnConnect.setText(getResources().getString(R.string.connect));
-                    }
-                });
-
-                Log.e(TAG, "UnknownHostException: ");
-            } catch (IOException e1) {
-                e1.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.btnConnect.setText(getResources().getString(R.string.connect));
-                    }
-                });
-                Log.e(TAG, "IOException:");
+                //    }
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -526,15 +532,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        void sendMessage(final String message) {
+        void sendMessage(final byte[] message) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         if (null != socket) {
-                            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                            Log.e(TAG, "sendMessage: " + message);
-                            out.println(message);
+                            Log.e(TAG, "sendMessage: " + Arrays.toString(message));
+                            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                            out.write(message);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Exception: " + e.getMessage());
