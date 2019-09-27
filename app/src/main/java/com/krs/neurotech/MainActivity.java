@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -48,13 +49,38 @@ public class MainActivity extends AppCompatActivity {
     private ClientThread clientThread;
     private String TAG = MainActivity.class.getSimpleName();
     private String ID = "01";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferences = getSharedPreferences(getString(R.string.pref_key), MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        String pass = sharedPreferences.getString(getResources().getString(R.string.pass_key_sp), "");
+
+        if (pass.isEmpty()) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setTitle(getResources().getString(R.string.neurotech));
+
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.clear();
+                editor.commit();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
         binding.imgchange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 final EditText edit_id = dialog.findViewById(R.id.custom_edit_id);
                 edit_id.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
                 edit_id.setSelection(edit_id.getText().length());
+
+                final EditText edit_pass = dialog.findViewById(R.id.edit_pass);
+
                 MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
                 MaterialButton btnOk = dialog.findViewById(R.id.btnOk);
 
@@ -74,10 +103,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        String str = edit_id.getText().toString().trim();
-                        setNewId(str);
-                        dialog.dismiss();
-
+                        String pass = edit_pass.getText().toString().trim();
+                        if (pass.equalsIgnoreCase(getResources().getString(R.string.password))) {
+                            String str = edit_id.getText().toString().trim();
+                            setNewId(str);
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Invalid Password!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -98,10 +131,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llId.setBackgroundResource(R.drawable.my_custom_background);
                     String str_id = binding.edtId.getText().toString().trim();
                     if (str_id.length() != 0) {
                         setId(str_id);
                     }
+                } else {
+                    binding.llId.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
             }
         });
@@ -121,8 +157,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llD1.setBackgroundResource(R.drawable.my_custom_background);
                     String display1 = binding.edtDisplay1.getText().toString().trim();
                     sendDisplayMsg(display1, (byte) 0x01);
+                } else {
+                    binding.llD1.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
             }
         });
@@ -141,8 +180,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llD2.setBackgroundResource(R.drawable.my_custom_background);
                     String display2 = binding.edtDisplay2.getText().toString().trim();
                     sendDisplayMsg(display2, (byte) 0x02);
+                } else {
+                    binding.llD2.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
 
             }
@@ -162,8 +204,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llD3.setBackgroundResource(R.drawable.my_custom_background);
                     String display3 = binding.edtDisplay3.getText().toString().trim();
                     sendDisplayMsg(display3, (byte) 0x03);
+                } else {
+                    binding.llD3.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
             }
         });
@@ -182,8 +227,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llD4.setBackgroundResource(R.drawable.my_custom_background);
                     String display4 = binding.edtDisplay4.getText().toString().trim();
                     sendDisplayMsg(display4, (byte) 0x04);
+                } else {
+                    binding.llD4.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
             }
         });
@@ -202,9 +250,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.llD5.setBackgroundResource(R.drawable.my_custom_background);
                     String display5 = binding.edtDisplay5.getText().toString().trim();
                     sendDisplayMsg(display5, (byte) 0x05);
                     hideKeyboard(binding.edtDisplay5);
+                } else {
+                    binding.llD5.setBackgroundColor(getResources().getColor(R.color.lightGreen));
                 }
             }
         });

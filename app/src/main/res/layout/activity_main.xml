@@ -7,17 +7,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_connect"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:padding="8dp"
-            android:text="Connet"
-            android:textSize="20sp"
-            app:backgroundTint="@color/colorPrimary" />
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:padding="8dp"
+                android:text="Connect"
+                android:textSize="20sp"
+                app:backgroundTint="@color/colorPrimary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="15dp"
+                android:padding="8dp"
+                android:text="Logout"
+                android:textSize="20sp"
+                app:backgroundTint="@color/colorPrimary" />
+
+
+        </LinearLayout>
+
 
         <ScrollView
             android:layout_width="match_parent"
@@ -35,6 +61,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/ll_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -78,6 +105,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_d1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -97,12 +125,6 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/imgsend1"
-                        android:layout_width="22dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/send" />
 
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display1"
@@ -118,9 +140,18 @@
                         android:textStyle="bold"
                         app:met_mask="##.##" />
 
+
+                    <ImageView
+                        android:id="@+id/imgsend1"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_d2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -140,12 +171,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/imgsend2"
-                        android:layout_width="22dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/send" />
+
 
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display2"
@@ -161,10 +187,18 @@
                         android:textStyle="bold"
                         app:met_mask="##.##" />
 
+                    <ImageView
+                        android:id="@+id/imgsend2"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_d3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -184,12 +218,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/imgsend3"
-                        android:layout_width="22dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/send" />
+
 
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display3"
@@ -205,9 +234,17 @@
                         android:textStyle="bold"
                         app:met_mask="##.##" />
 
+                    <ImageView
+                        android:id="@+id/imgsend3"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_d4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -227,12 +264,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/imgsend4"
-                        android:layout_width="22dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/send" />
+
 
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display4"
@@ -248,9 +280,17 @@
                         android:textStyle="bold"
                         app:met_mask="##.##" />
 
+                    <ImageView
+                        android:id="@+id/imgsend4"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
+
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_d5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -270,12 +310,6 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/imgsend5"
-                        android:layout_width="22dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:background="@drawable/send" />
 
                     <com.santalu.maskedittext.MaskEditText
                         android:id="@+id/edt_display5"
@@ -291,6 +325,13 @@
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:met_mask="##.##" />
+
+                    <ImageView
+                        android:id="@+id/imgsend5"
+                        android:layout_width="22dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/send" />
 
                 </LinearLayout>
 

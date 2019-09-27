@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 
 class Utils {
 
+
     static boolean checkWifiOnAndConnected(Context context) {
         WifiManager wifiMgr = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         assert wifiMgr != null;
