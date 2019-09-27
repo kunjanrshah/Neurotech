@@ -12,10 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_connect"
@@ -28,6 +25,11 @@
                 android:text="Connect"
                 android:textSize="20sp"
                 app:backgroundTint="@color/colorPrimary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_logout"
@@ -89,6 +91,8 @@
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00"
+                        android:selectAllOnFocus="true"
+                        android:text="01"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display1"
                         android:textColor="@color/colorPrimary"
@@ -131,6 +135,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:layout_weight="1"
+                        android:selectAllOnFocus="true"
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
@@ -179,6 +184,7 @@
                         android:layout_height="45dp"
                         android:layout_weight="1"
                         android:background="@null"
+                        android:selectAllOnFocus="true"
                         android:gravity="right|center"
                         android:hint="00.00"
                         android:inputType="number"
@@ -228,6 +234,7 @@
                         android:background="@null"
                         android:gravity="right|center"
                         android:hint="00.00"
+                        android:selectAllOnFocus="true"
                         android:inputType="number"
                         android:nextFocusDown="@id/edt_display4"
                         android:textSize="24sp"
@@ -275,6 +282,7 @@
                         android:gravity="right|center"
                         android:hint="00.00"
                         android:inputType="number"
+                        android:selectAllOnFocus="true"
                         android:nextFocusDown="@id/edt_display5"
                         android:textSize="24sp"
                         android:textStyle="bold"
@@ -321,6 +329,7 @@
                         android:hint="00.00"
                         android:imeOptions="actionNext"
                         android:inputType="number"
+                        android:selectAllOnFocus="true"
                         android:nextFocusDown="@id/btn_submit"
                         android:textSize="24sp"
                         android:textStyle="bold"
@@ -336,18 +345,39 @@
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_submit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
+                        android:layout_gravity="left"
+
                         android:padding="10dp"
                         android:text="Save"
                         android:textSize="20sp"
                         app:backgroundTint="@color/colorPrimary" />
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:padding="10dp"
+                        android:text="Next"
+                        android:textSize="20sp"
+                        app:backgroundTint="@color/colorPrimary" />
+
+                </LinearLayout>
 
 
             </LinearLayout>

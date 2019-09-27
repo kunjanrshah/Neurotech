@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         String pass = edit_pass.getText().toString().trim();
-                        if (pass.equalsIgnoreCase(getResources().getString(R.string.password))) {
+                        if (pass.equalsIgnoreCase(getResources().getString(R.string.change_id_password))) {
                             String str = edit_id.getText().toString().trim();
                             setNewId(str);
                             dialog.dismiss();
@@ -131,13 +131,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    binding.edtId.setTextColor(getResources().getColor(android.R.color.black));
                     binding.llId.setBackgroundResource(R.drawable.my_custom_background);
                     String str_id = binding.edtId.getText().toString().trim();
                     if (str_id.length() != 0) {
                         setId(str_id);
                     }
                 } else {
+                    // binding.edtId.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llId.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+
                 }
             }
         });
@@ -151,28 +154,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = binding.edtId.getText().toString().trim();
+                if (!id.isEmpty()) {
+                    int id1 = Integer.parseInt(id);
+                    if (id1 > 0) {
+                        id1++;
+                        binding.edtId.setText("" + id1);
+                        setId("" + id1);
+                    }
+                }
+            }
+        });
+
         binding.edtDisplay1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay1.setSelection(Objects.requireNonNull(binding.edtDisplay1.getText()).length());
         binding.edtDisplay1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
                 if (!hasFocus) {
+                    // binding.edtDisplay1.setTextColor(getResources().getColor(android.R.color.black));
                     binding.llD1.setBackgroundResource(R.drawable.my_custom_background);
-                    String display1 = binding.edtDisplay1.getText().toString().trim();
-                    sendDisplayMsg(display1, (byte) 0x01);
+                    onLostFocusDisplay1();
                 } else {
+                    // binding.edtDisplay1.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llD1.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                    onGotFocusDisplay1();
                 }
             }
         });
-        binding.imgsend1.setOnClickListener(new View.OnClickListener() {
+
+        binding.tvDisplay1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String display1 = binding.edtDisplay1.getText().toString().trim();
-                sendDisplayMsg(display1, (byte) 0x01);
+                onGotFocusDisplay1();
             }
         });
 
+        binding.imgsend1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLostFocusDisplay1();
+            }
+        });
 
         binding.edtDisplay2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay2.setSelection(Objects.requireNonNull(binding.edtDisplay2.getText()).length());
@@ -180,23 +207,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    // binding.edtDisplay2.setTextColor(getResources().getColor(android.R.color.black));
                     binding.llD2.setBackgroundResource(R.drawable.my_custom_background);
-                    String display2 = binding.edtDisplay2.getText().toString().trim();
-                    sendDisplayMsg(display2, (byte) 0x02);
+                    onLostFocusDisplay2();
                 } else {
+                    // binding.edtDisplay2.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llD2.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                    onGotFocusDisplay2();
                 }
-
             }
         });
         binding.imgsend2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String display2 = binding.edtDisplay2.getText().toString().trim();
-                sendDisplayMsg(display2, (byte) 0x02);
+                onLostFocusDisplay2();
             }
         });
 
+        binding.tvDisplay2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGotFocusDisplay2();
+            }
+        });
 
         binding.edtDisplay3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay3.setSelection(Objects.requireNonNull(binding.edtDisplay3.getText()).length());
@@ -204,22 +237,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    //binding.edtDisplay3.setTextColor(getResources().getColor(android.R.color.black));
                     binding.llD3.setBackgroundResource(R.drawable.my_custom_background);
-                    String display3 = binding.edtDisplay3.getText().toString().trim();
-                    sendDisplayMsg(display3, (byte) 0x03);
+                    onLostFocusDisplay3();
                 } else {
+                    //binding.edtDisplay3.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llD3.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                    onGotFocusDisplay3();
                 }
             }
         });
         binding.imgsend3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String display3 = binding.edtDisplay3.getText().toString().trim();
-                sendDisplayMsg(display3, (byte) 0x03);
+                onLostFocusDisplay3();
             }
         });
-
+        binding.tvDisplay3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGotFocusDisplay3();
+            }
+        });
 
         binding.edtDisplay4.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay4.setSelection(Objects.requireNonNull(binding.edtDisplay4.getText()).length());
@@ -227,22 +266,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
+                    //binding.edtDisplay4.setTextColor(getResources().getColor(android.R.color.black));
                     binding.llD4.setBackgroundResource(R.drawable.my_custom_background);
-                    String display4 = binding.edtDisplay4.getText().toString().trim();
-                    sendDisplayMsg(display4, (byte) 0x04);
+                    onLostFocusDisplay4();
                 } else {
+                    // binding.edtDisplay4.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llD4.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                    onGotFocusDisplay4();
                 }
             }
         });
         binding.imgsend4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String display4 = binding.edtDisplay4.getText().toString().trim();
-                sendDisplayMsg(display4, (byte) 0x04);
+                onLostFocusDisplay4();
             }
         });
-
+        binding.tvDisplay4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGotFocusDisplay4();
+            }
+        });
 
         binding.edtDisplay5.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         binding.edtDisplay5.setSelection(Objects.requireNonNull(binding.edtDisplay5.getText()).length());
@@ -251,22 +296,28 @@ public class MainActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     binding.llD5.setBackgroundResource(R.drawable.my_custom_background);
-                    String display5 = binding.edtDisplay5.getText().toString().trim();
-                    sendDisplayMsg(display5, (byte) 0x05);
-                    hideKeyboard(binding.edtDisplay5);
+                    // binding.edtDisplay5.setTextColor(getResources().getColor(android.R.color.black));
+                    onLostFocusDisplay5();
                 } else {
+                    // binding.edtDisplay5.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llD5.setBackgroundColor(getResources().getColor(R.color.lightGreen));
+                    onGotFocusDisplay5();
                 }
             }
         });
         binding.imgsend5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String display5 = binding.edtDisplay5.getText().toString().trim();
-                sendDisplayMsg(display5, (byte) 0x05);
+                onLostFocusDisplay5();
             }
         });
 
+        binding.tvDisplay5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGotFocusDisplay5();
+            }
+        });
 
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,6 +337,92 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Connect();
+    }
+
+    private void onGotFocusDisplay5() {
+        final String display5 = binding.edtDisplay5.getText().toString().trim();
+        binding.edtDisplay5.requestFocus();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendDisplayMsg(display5, (byte) 0x09, (byte) 0x05);
+            }
+        }, 1000);
+    }
+
+    private void onLostFocusDisplay5() {
+        String display5 = binding.edtDisplay5.getText().toString().trim();
+        sendDisplayMsg(display5, (byte) 0x06, (byte) 0x05);
+        hideKeyboard(binding.edtDisplay5);
+    }
+
+    private void onGotFocusDisplay4() {
+        final String display4 = binding.edtDisplay4.getText().toString().trim();
+        binding.edtDisplay4.requestFocus();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendDisplayMsg(display4, (byte) 0x09, (byte) 0x04);
+            }
+        }, 1000);
+    }
+
+    private void onLostFocusDisplay4() {
+
+        String display4 = binding.edtDisplay4.getText().toString().trim();
+        sendDisplayMsg(display4, (byte) 0x06, (byte) 0x04);
+    }
+
+    private void onGotFocusDisplay3() {
+        final String display3 = binding.edtDisplay3.getText().toString().trim();
+        binding.edtDisplay3.requestFocus();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendDisplayMsg(display3, (byte) 0x09, (byte) 0x03);
+            }
+        }, 1000);
+    }
+
+    private void onLostFocusDisplay3() {
+
+        String display3 = binding.edtDisplay3.getText().toString().trim();
+        sendDisplayMsg(display3, (byte) 0x06, (byte) 0x03);
+    }
+
+
+    private void onGotFocusDisplay2() {
+        final String display2 = binding.edtDisplay2.getText().toString().trim();
+        binding.edtDisplay2.requestFocus();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendDisplayMsg(display2, (byte) 0x09, (byte) 0x02);
+            }
+        }, 1000);
+    }
+
+    private void onLostFocusDisplay2() {
+
+        String display2 = binding.edtDisplay2.getText().toString().trim();
+        sendDisplayMsg(display2, (byte) 0x06, (byte) 0x02);
+    }
+
+
+    private void onGotFocusDisplay1() {
+        final String display1 = binding.edtDisplay1.getText().toString().trim();
+        binding.edtDisplay1.requestFocus();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendDisplayMsg(display1, (byte) 0x09, (byte) 0x01);
+            }
+        }, 1000);
+    }
+
+    private void onLostFocusDisplay1() {
+        String display1 = binding.edtDisplay1.getText().toString().trim();
+        sendDisplayMsg(display1, (byte) 0x06, (byte) 0x01);
     }
 
     @Override
@@ -430,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
                         binding.edtId.setText(format("%d", i));
                     }
                 }
-            }, 10000);
+            }, 2000);
         }
     }
 
@@ -471,7 +608,7 @@ public class MainActivity extends AppCompatActivity {
                         binding.edtId.setText(str_id);
                         setId(str_id);
                     }
-                }, 10000);
+                }, 2000);
             }
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -479,7 +616,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendDisplayMsg(String display, byte num) {
+    private void sendDisplayMsg(String display, byte fcode, byte num) {
         try {
             if (!display.isEmpty()) {
                 display = display.replace(".", "");
@@ -488,7 +625,6 @@ public class MainActivity extends AppCompatActivity {
                 String result = appendZeros(display, 4);
 
                 byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
-                byte fcode = 0x06;
                 byte[] msg2 = new byte[3];
                 msg2[0] = fcode;
                 msg2[2] = num;

@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String pass = edtPass.getText().toString().trim();
 
-                if (pass.equalsIgnoreCase(getResources().getString(R.string.password))) {
+                if (pass.equalsIgnoreCase(getResources().getString(R.string.login_password))) {
                     editor.putString(getResources().getString(R.string.pass_key_sp), pass);
                     editor.commit();
 
