@@ -6,16 +6,12 @@
     android:gravity="center"
     android:orientation="vertical">
 
-
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="20dp"
-
-        android:textSize="20sp"
-        app:backgroundTint="@color/colorPrimary"
-        android:text="Login" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Password"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/edtPass"
@@ -28,12 +24,15 @@
         android:inputType="textPassword"
         android:padding="10dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter Password"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Login"
+        android:textSize="20sp"
+        app:backgroundTint="@color/colorPrimary" />
 
 
 </LinearLayout>
