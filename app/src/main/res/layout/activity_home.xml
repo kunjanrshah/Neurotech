@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGray"
@@ -35,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:fontFamily="@font/montserrat_medium"
-                    android:text="Neuro Tech"
+                    android:text="NeuroTech"
                     android:textColor="@color/colorWhite"
                     android:textSize="14dp" />
             </LinearLayout>
@@ -56,6 +59,7 @@
                 android:gravity="center">
 
                 <LinearLayout
+                    android:id="@+id/ll_wifi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -69,6 +73,7 @@
                         android:gravity="center">
 
                         <ImageView
+                            android:id="@+id/imgWifi"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
@@ -76,17 +81,19 @@
                             android:src="@drawable/wifi"/>
                     </LinearLayout>
                     <TextView
+                        android:id="@+id/tv_net"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_semibold"
                         android:gravity="center"
                         android:singleLine="true"
-                        android:text="Neurotech"
+                        android:text="Wifi"
                         android:textColor="@color/colorPrimary"/>
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_change_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -120,6 +127,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -185,12 +193,14 @@
             android:layout_marginRight="20dp">
 
             <EditText
+                android:id="@+id/edtId"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:background="@drawable/round_corner_white"
                  />
 
             <Button
+                android:id="@+id/btn_go"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="right"
@@ -203,9 +213,12 @@
         </FrameLayout>
     </LinearLayout>
 
-<LinearLayout
+        <LinearLayout
+            android:id="@+id/ll_display1"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
     android:layout_marginTop="20dp"
     android:background="@drawable/round_corner_light_blue"
     android:gravity="center"
@@ -222,17 +235,185 @@
         android:textColor="@color/colorPrimary"
         android:textSize="23sp"/>
 
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:background="@drawable/round_corner_color_primary_1"
-        android:fontFamily="@font/montserrat_semibold"
-        android:gravity="center"
-        android:text="11.00"
-        android:textColor="@color/colorWhite"
-        android:textSize="24sp"/>
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/edt_display1"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:background="@drawable/round_corner_color_primary_1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:hint="00.00"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="24sp"
+                app:met_mask="##.##" />
 
 
-</LinearLayout>
+        </LinearLayout>
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_display2"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round_corner_white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Display2"
+                android:textColor="@color/colorPrimary"
+                android:textSize="23sp" />
+
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/edt_display2"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:background="@drawable/round_corner_color_primary_1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:hint="00.00"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:text="11.00"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="24sp"
+                app:met_mask="##.##" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_display3"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round_corner_white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Display3"
+                android:textColor="@color/colorPrimary"
+                android:textSize="23sp" />
+
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/edt_display3"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:background="@drawable/round_corner_color_primary_1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:hint="00.00"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="24sp"
+                app:met_mask="##.##" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_display4"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round_corner_white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Display4"
+                android:textColor="@color/colorPrimary"
+                android:textSize="23sp" />
+
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/edt_display4"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:background="@drawable/round_corner_color_primary_1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:hint="00.00"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="24sp"
+                app:met_mask="##.##" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_display5"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/round_corner_white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Display5"
+                android:textColor="@color/colorPrimary"
+                android:textSize="23sp" />
+
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/edt_display5"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:background="@drawable/round_corner_color_primary_1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:hint="00.00"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="24sp"
+                app:met_mask="##.##" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

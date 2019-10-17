@@ -1,11 +1,24 @@
 package com.krs.neurotech;
 
 import android.content.Context;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
 class Utils {
 
+
+    static String getSSID(Context context) {
+        String ssid = "";
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo;
+
+        wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+            ssid = wifiInfo.getSSID();
+        }
+        return ssid;
+    }
 
     static boolean checkWifiOnAndConnected(Context context) {
         WifiManager wifiMgr = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);

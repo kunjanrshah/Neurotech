@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private final int SERVERPORT = 1234;
     private final String SERVER_IP = "192.168.4.1";
     ActivityMainBinding binding = null;
-    //int RESPONSE = -1;
     private ClientThread clientThread;
     private String TAG = MainActivity.class.getSimpleName();
     private String ID = "01";
@@ -140,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // binding.edtId.setTextColor(getResources().getColor(android.R.color.white));
                     binding.llId.setBackgroundColor(getResources().getColor(R.color.lightGreen));
-
                 }
             }
         });
