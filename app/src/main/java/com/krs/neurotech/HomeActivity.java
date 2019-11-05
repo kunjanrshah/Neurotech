@@ -68,6 +68,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     boolean isOnTextChanged5 = false;
     private boolean writeID=false;
     int disConnectCount=0;
+    private String isDuplicate1="";
+    private String isDuplicate2="";
+    private String isDuplicate3="";
+    private String isDuplicate4="";
+    private String isDuplicate5="";
     ByteArrayOutputStream outputStream1=null;
 
     @Override
@@ -97,15 +102,17 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         }
 
        binding = DataBindingUtil.setContentView(this,R.layout.activity_homepage);
-        binding.imgWifi.setBackground(null);
-        binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
-       binding.llLogout.setOnClickListener(v -> {
+       binding.imgWifi.setBackground(null);
+       binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
+
+        binding.llLogout.setOnClickListener(v -> {
             editor.clear();
             editor.apply();
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
+
         binding.llChangeId.setOnClickListener(v -> {
             showCustomBottomSheet();
         });
@@ -126,7 +133,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 isOnTextChanged1 = true;
             }
 
@@ -135,8 +141,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(getCurrentFocus()==binding.edtDisplay1){
                     if(s.length()==5 && isOnTextChanged1 && !writeID) {
-                        isOnTextChanged1 = false;
-                        runOnUiThread(() -> onLostFocusDisplay1());
+                        if(!isDuplicate1.equals(s.toString())){
+                            isDuplicate1=s.toString();
+                            isOnTextChanged1 = false;
+                            runOnUiThread(() -> writeToDisplay1());
+                        }
                     }
                 }
             }
@@ -158,7 +167,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged2 && !writeID){
                     isOnTextChanged1 = false;
-                    runOnUiThread(() -> onLostFocusDisplay2());
+                    runOnUiThread(() -> writeToDisplay2());
                 }
             }
         });
@@ -179,7 +188,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged3 && !writeID){
                     isOnTextChanged3=false;
-                    runOnUiThread(() -> onLostFocusDisplay3());
+                    runOnUiThread(() -> writeToDisplay3());
                 }
             }
         });
@@ -200,7 +209,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged4 && !writeID){
                     isOnTextChanged4=false;
-                    runOnUiThread(() -> onLostFocusDisplay4());
+                    runOnUiThread(() -> writeToDisplay4());
                 }
             }
         });
@@ -221,59 +230,59 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged5 && !writeID){
                     isOnTextChanged5=false;
-                    runOnUiThread(() -> onLostFocusDisplay5());
+                    runOnUiThread(() -> writeToDisplay5());
                 }
             }
         });
 
         binding.edtDisplay1.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                onGotFocusDisplay1(true);
+                focusToDisplay1(true);
             }
         });
 
         binding.edtDisplay2.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                onGotFocusDisplay2(true);
+                focusToDisplay2(true);
             }
         });
 
         binding.edtDisplay3.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                onGotFocusDisplay3(true);
+                focusToDisplay3(true);
             }
         });
 
         binding.edtDisplay4.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                onGotFocusDisplay4(true);
+                focusToDisplay4(true);
             }
         });
 
         binding.edtDisplay5.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                onGotFocusDisplay5(true);
+                focusToDisplay5(true);
             }
         });
 
        binding.llDisplay1.setOnClickListener(v->{
-            onGotFocusDisplay1(false);
+            focusToDisplay1(false);
         });
 
         binding.llDisplay2.setOnClickListener(v->{
-            onGotFocusDisplay2(false);
+            focusToDisplay2(false);
         });
 
         binding.llDisplay3.setOnClickListener(v->{
-            onGotFocusDisplay3(false);
+            focusToDisplay3(false);
         });
 
         binding.llDisplay4.setOnClickListener(v->{
-            onGotFocusDisplay4(false);
+            focusToDisplay4(false);
         });
 
         binding.llDisplay5.setOnClickListener(v->{
-            onGotFocusDisplay5(false);
+            focusToDisplay5(false);
         });
 
         binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
@@ -310,7 +319,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             }
         });
 
-
       Connect();
     }
 
@@ -331,6 +339,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     protected void onDestroy() {
         super.onDestroy();
         Disconnect();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void showCustomBottomSheet() {
@@ -355,19 +368,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_INDEFINITE);
                         snackBar.setAction("Connect", v -> {
                             snackBar.dismiss();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Connect();
-                                }
-                            },400);
-
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.btnGo.performClick();
-                                }
-                            },800);
+                            new Handler().postDelayed(() -> Connect(),400);
+                            new Handler().postDelayed(() -> binding.btnGo.performClick(),800);
                         });
                         snackBar.show();
 
@@ -388,11 +390,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if (null != clientThread) {
             clientThread = null;
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void Connect() {
@@ -551,7 +548,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         bottomSheet.dismiss(true);
     }
 
-    private void onGotFocusDisplay1(boolean isFocus) {
+    private void focusToDisplay1(boolean isFocus) {
         binding.edtDisplay1.setEnabled(true);
         binding.edtDisplay1.setClickable(true);
         binding.edtDisplay1.requestFocus();
@@ -572,7 +569,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
 
     }
-    private void onGotFocusDisplay2(boolean isFocus) {
+    private void focusToDisplay2(boolean isFocus) {
         binding.edtDisplay2.setEnabled(true);
         binding.edtDisplay2.setClickable(true);
         binding.edtDisplay2.requestFocus();
@@ -591,8 +588,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay2));
         }
     }
-
-    private void onGotFocusDisplay3(boolean isFocus) {
+    private void focusToDisplay3(boolean isFocus) {
         binding.edtDisplay3.setEnabled(true);
         binding.edtDisplay3.setClickable(true);
         binding.edtDisplay3.requestFocus();
@@ -610,8 +606,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay3));
         }
     }
-
-    private void onGotFocusDisplay4(boolean isFocus) {
+    private void focusToDisplay4(boolean isFocus) {
         binding.edtDisplay4.setEnabled(true);
         binding.edtDisplay4.setClickable(true);
         binding.edtDisplay4.requestFocus();
@@ -629,8 +624,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay4));
         }
     }
-
-    private void onGotFocusDisplay5(boolean isFocus) {
+    private void focusToDisplay5(boolean isFocus) {
         binding.edtDisplay5.setEnabled(true);
         binding.edtDisplay5.setClickable(true);
         binding.edtDisplay5.requestFocus();
@@ -649,36 +643,31 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay5));
         }
     }
-
-    private void onLostFocusDisplay1() {
+    private void writeToDisplay1() {
         requestWrite=1;
         requestFocus=0;
         String display1 = binding.edtDisplay1.getText().toString().trim();
         sendDisplayMsg(display1, (byte) 0x06, (byte) 0x01);
     }
-
-    private void onLostFocusDisplay2() {
+    private void writeToDisplay2() {
         requestWrite=2;
         requestFocus=0;
         String display2 = binding.edtDisplay2.getText().toString().trim();
         sendDisplayMsg(display2, (byte) 0x06, (byte) 0x02);
     }
-
-    private void onLostFocusDisplay3() {
+    private void writeToDisplay3() {
         requestWrite=3;
         requestFocus=0;
         String display3 = binding.edtDisplay3.getText().toString().trim();
         sendDisplayMsg(display3, (byte) 0x06, (byte) 0x03);
     }
-
-    private void onLostFocusDisplay4() {
+    private void writeToDisplay4() {
         requestWrite=4;
         requestFocus=0;
         String display4 = binding.edtDisplay4.getText().toString().trim();
         sendDisplayMsg(display4, (byte) 0x06, (byte) 0x04);
     }
-
-    private void onLostFocusDisplay5() {
+    private void writeToDisplay5() {
         requestWrite=5;
         requestFocus=0;
         String display5 = binding.edtDisplay5.getText().toString().trim();
@@ -784,7 +773,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                             if(requestWrite == 1 && !ack_msg.equals("11")){
                                 requestWrite=0;
-                                onLostFocusDisplay1();
+                                writeToDisplay1();
                             }else{
                                 runOnUiThread(() -> {
                                     binding.edtDisplay1.setEnabled(false);
@@ -795,7 +784,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                             if(requestWrite==2 && !ack_msg.equals("12")){
                                 requestWrite=0;
-                                onLostFocusDisplay2();
+                                writeToDisplay2();
                             }else{
                                 runOnUiThread(() -> {
                                    binding.edtDisplay2.setEnabled(false);
@@ -806,7 +795,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                             if(requestWrite==3 && !ack_msg.equals("13")){
                                 requestWrite=0;
-                                onLostFocusDisplay3();
+                                writeToDisplay3();
                             }else{
                                 runOnUiThread(() -> {
                                     binding.edtDisplay3.setEnabled(false);
@@ -817,7 +806,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                            if(requestWrite==4 && !ack_msg.equals("14")){
                                 requestWrite=0;
-                                onLostFocusDisplay4();
+                                writeToDisplay4();
                             }else{
                                runOnUiThread(() -> {
                                    binding.edtDisplay4.setEnabled(false);
@@ -830,7 +819,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                            if(requestWrite==5 && !ack_msg.equals("15")){
                                 requestWrite=0;
-                                onLostFocusDisplay5();
+                                writeToDisplay5();
                             }else{
                                runOnUiThread(() -> {
                                    binding.edtDisplay5.setEnabled(false);
@@ -844,19 +833,19 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                             Log.d(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
                             if(requestFocus==1){
                                 requestFocus=0;
-                                onGotFocusDisplay1(true);
+                                focusToDisplay1(true);
                             }else if(requestFocus==2){
                                 requestFocus=0;
-                                onGotFocusDisplay2(true);
+                                focusToDisplay2(true);
                             }else if(requestFocus==3){
                                 requestFocus=0;
-                                onGotFocusDisplay3(true);
+                                focusToDisplay3(true);
                             } else if(requestFocus==4){
                                 requestFocus=0;
-                                onGotFocusDisplay4(true);
+                                focusToDisplay4(true);
                             }else if(requestFocus==5){
                                 requestFocus=0;
-                                onGotFocusDisplay5(true);
+                                focusToDisplay5(true);
                             }
                         }
                     }
