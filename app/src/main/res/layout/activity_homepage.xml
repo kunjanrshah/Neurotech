@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+    android:id="@+id/ll_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGray"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/round_bottom_corner_colorprimary"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Welcome To,"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text="NeuroTech"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14dp" />
+            </LinearLayout>
+        </LinearLayout>
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="8dp"
+            app:cardCornerRadius="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/ll_wifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+
+                    <LinearLayout
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/round_corner_gray"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/imgWifi"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerInside"
+                            />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_net"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/wifi"
+                        android:textColor="@color/colorPrimary"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_change_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+
+                    <LinearLayout
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/round_corner_gray"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/change_id"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:singleLine="true"
+                        android:text="Change ID"
+                        android:textColor="@color/colorPrimary"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="vertical"  >
+
+                    <LinearLayout
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/round_corner_gray"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/logout"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Logout"
+                        android:textColor="@color/colorPrimary"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:background="@drawable/round_corner_color_primary"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:text="ID"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <EditText
+                android:id="@+id/edtId"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:hint="00"
+                android:textColor="@color/lightBlack"
+                android:textColorHint="@color/lightBlack"
+                android:textSize="24sp"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:background="@drawable/round_corner_white"
+                 />
+
+            <Button
+                android:id="@+id/btn_go"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:background="@drawable/round_corner_dark_gray"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="GO"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+        </FrameLayout>
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/ll_display1"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/round_corner_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Display1"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="23sp"/>
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/edt_display1"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/round_corner_color_primary_1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center"
+                    android:hint="00.00"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="24sp"
+                    app:met_mask="##.##" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_display2"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/round_corner_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Display2"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="23sp" />
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/edt_display2"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/round_corner_color_primary_1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center"
+                    android:hint="00.00"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:text="11.00"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="24sp"
+                    app:met_mask="##.##" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_display3"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/round_corner_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Display3"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="23sp" />
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/edt_display3"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/round_corner_color_primary_1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center"
+                    android:hint="00.00"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="24sp"
+                    app:met_mask="##.##" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_display4"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/round_corner_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Display4"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="23sp" />
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/edt_display4"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/round_corner_color_primary_1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center"
+                    android:hint="00.00"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="24sp"
+                    app:met_mask="##.##" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_display5"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/round_corner_white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Display5"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="23sp" />
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/edt_display5"
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/round_corner_color_primary_1"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center"
+                    android:hint="00.00"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite"
+                    android:textSize="24sp"
+                    app:met_mask="##.##" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:id="@+id/imgPrev"
+                android:layout_width="50dp"
+                android:background="@drawable/left_id"
+                android:layout_height="50dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/imgNext"
+                android:layout_width="50dp"
+                android:background="@drawable/right_id"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

@@ -9,4 +9,6 @@
     <string name="pass_key_sp">password</string>
     <string name="login_password">ntech</string>
     <string name="change_id_password">1995</string>
+    <string name="wifi">WiFi</string>
+    <string name="disconnected_because">Disconnected because of something wrong happen</string>
 </resources>

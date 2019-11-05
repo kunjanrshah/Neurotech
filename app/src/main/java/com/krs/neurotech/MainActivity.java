@@ -98,18 +98,15 @@ public class MainActivity extends AppCompatActivity {
                 MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
                 MaterialButton btnOk = dialog.findViewById(R.id.btnOk);
 
-                btnOk.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                btnOk.setOnClickListener(v1 -> {
 
-                        String pass = edit_pass.getText().toString().trim();
-                        if (pass.equalsIgnoreCase(getResources().getString(R.string.change_id_password))) {
-                            String str = edit_id.getText().toString().trim();
-                            setNewId(str);
-                            dialog.dismiss();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Invalid Password!", Toast.LENGTH_SHORT).show();
-                        }
+                    String pass1 = edit_pass.getText().toString().trim();
+                    if (pass1.equalsIgnoreCase(getResources().getString(R.string.change_id_password))) {
+                        String str = edit_id.getText().toString().trim();
+                        setNewId(str);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid Password!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -680,15 +677,12 @@ public class MainActivity extends AppCompatActivity {
                         display5 = result.substring(22, 26);
                         final int d5 = Integer.parseInt(display5, 16);
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
-                                binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
-                                binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
-                                binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
-                                binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
-                            }
+                        runOnUiThread(() -> {
+                            binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
+                            binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
+                            binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
+                            binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
+                            binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
                         });
                     }
                 }
@@ -706,19 +700,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         void sendMessage(final byte[] message) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (null != socket) {
-                            Log.e(TAG, "sendMessage: " + Arrays.toString(message));
-                            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                            out.write(message);
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception: " + e.getMessage());
-                        e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    if (null != socket) {
+                        Log.e(TAG, "sendMessage: " + Arrays.toString(message));
+                        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                        out.write(message);
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }).start();
         }

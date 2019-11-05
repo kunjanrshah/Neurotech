@@ -1,23 +1,33 @@
 package com.krs.neurotech;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.arthurivanets.bottomsheets.BottomSheet;
 import com.google.android.material.snackbar.Snackbar;
-import com.krs.neurotech.databinding.ActivityHomeBinding;
+import com.krs.neurotech.databinding.ActivityHomepageBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -27,6 +37,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.TimerTask;
 
 import dmax.dialog.SpotsDialog;
 
@@ -36,11 +47,10 @@ import static com.krs.neurotech.Utils.hexStringToByteArray;
 import static java.lang.String.format;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements SimpleCustomBottomSheet.IchangeId{
 
     private final int SERVERPORT = 1234;
     private final String SERVER_IP = "192.168.4.1";
-    ActivityHomeBinding binding = null;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ClientThread clientThread;
@@ -48,17 +58,36 @@ public class HomeActivity extends Activity {
     private String ID = "01";
     private boolean isConnected = false;
     private BottomSheet bottomSheet;
+    ActivityHomepageBinding binding;
+    private int requestFocus=0;
+    private int requestWrite=0;
+    boolean isOnTextChanged1 = false;
+    boolean isOnTextChanged2 = false;
+    boolean isOnTextChanged3 = false;
+    boolean isOnTextChanged4 = false;
+    boolean isOnTextChanged5 = false;
+    private boolean writeID=false;
+    int disConnectCount=0;
+    ByteArrayOutputStream outputStream1=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_homepage);
         setTitle("");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        if (ContextCompat.checkSelfPermission(
+                HomeActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 555);
+        }
 
         sharedPreferences = getSharedPreferences(getString(R.string.pref_key), MODE_PRIVATE);
         editor = sharedPreferences.edit();
-
+        outputStream1 = new ByteArrayOutputStream();
         String pass = sharedPreferences.getString(getResources().getString(R.string.pass_key_sp), "");
 
         if (pass.isEmpty()) {
@@ -67,10 +96,12 @@ public class HomeActivity extends Activity {
             finish();
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-        binding.llLogout.setOnClickListener(v -> {
+       binding = DataBindingUtil.setContentView(this,R.layout.activity_homepage);
+        binding.imgWifi.setBackground(null);
+        binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
+       binding.llLogout.setOnClickListener(v -> {
             editor.clear();
-            editor.commit();
+            editor.apply();
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -87,6 +118,164 @@ public class HomeActivity extends Activity {
             }
         });
 
+        binding.edtDisplay1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                isOnTextChanged1 = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(getCurrentFocus()==binding.edtDisplay1){
+                    if(s.length()==5 && isOnTextChanged1 && !writeID) {
+                        isOnTextChanged1 = false;
+                        runOnUiThread(() -> onLostFocusDisplay1());
+                    }
+                }
+            }
+        });
+
+        binding.edtDisplay2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isOnTextChanged2 = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(s.length()==5 && isOnTextChanged2 && !writeID){
+                    isOnTextChanged1 = false;
+                    runOnUiThread(() -> onLostFocusDisplay2());
+                }
+            }
+        });
+
+        binding.edtDisplay3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isOnTextChanged3 = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(s.length()==5 && isOnTextChanged3 && !writeID){
+                    isOnTextChanged3=false;
+                    runOnUiThread(() -> onLostFocusDisplay3());
+                }
+            }
+        });
+
+        binding.edtDisplay4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isOnTextChanged4 = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(s.length()==5 && isOnTextChanged4 && !writeID){
+                    isOnTextChanged4=false;
+                    runOnUiThread(() -> onLostFocusDisplay4());
+                }
+            }
+        });
+
+        binding.edtDisplay5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isOnTextChanged5=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(s.length()==5 && isOnTextChanged5 && !writeID){
+                    isOnTextChanged5=false;
+                    runOnUiThread(() -> onLostFocusDisplay5());
+                }
+            }
+        });
+
+        binding.edtDisplay1.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                onGotFocusDisplay1(true);
+            }
+        });
+
+        binding.edtDisplay2.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                onGotFocusDisplay2(true);
+            }
+        });
+
+        binding.edtDisplay3.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                onGotFocusDisplay3(true);
+            }
+        });
+
+        binding.edtDisplay4.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                onGotFocusDisplay4(true);
+            }
+        });
+
+        binding.edtDisplay5.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                onGotFocusDisplay5(true);
+            }
+        });
+
+       binding.llDisplay1.setOnClickListener(v->{
+            onGotFocusDisplay1(false);
+        });
+
+        binding.llDisplay2.setOnClickListener(v->{
+            onGotFocusDisplay2(false);
+        });
+
+        binding.llDisplay3.setOnClickListener(v->{
+            onGotFocusDisplay3(false);
+        });
+
+        binding.llDisplay4.setOnClickListener(v->{
+            onGotFocusDisplay4(false);
+        });
+
+        binding.llDisplay5.setOnClickListener(v->{
+            onGotFocusDisplay5(false);
+        });
+
         binding.edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         binding.edtId.setSelection(binding.edtId.getText().length());
         binding.btnGo.setOnClickListener(v -> {
@@ -97,16 +286,55 @@ public class HomeActivity extends Activity {
             }
         });
 
-        Connect();
+        binding.imgPrev.setOnClickListener(v -> {
+            String id = binding.edtId.getText().toString().trim();
+            if (!id.isEmpty()) {
+                int id1 = Integer.parseInt(id);
+                if (id1 > 0) {
+                    id1--;
+                    binding.edtId.setText("" + id1);
+                    setId("" + id1);
+                }
+            }
+        });
+
+        binding.imgNext.setOnClickListener(v -> {
+            String id = binding.edtId.getText().toString().trim();
+            if (!id.isEmpty()) {
+                int id1 = Integer.parseInt(id);
+                if (id1 > 0) {
+                    id1++;
+                    binding.edtId.setText("" + id1);
+                    setId("" + id1);
+                }
+            }
+        });
+
+
+      Connect();
     }
 
-    @Override
+
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    public void showSoftKeyboard(EditText editText){
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(editText.getApplicationWindowToken(),InputMethodManager.SHOW_FORCED, 0);
+    }
+
+   @Override
     protected void onDestroy() {
         super.onDestroy();
         Disconnect();
     }
 
     private void showCustomBottomSheet() {
+        hideSoftKeyboard();
         bottomSheet = new SimpleCustomBottomSheet(this);
         bottomSheet.show();
     }
@@ -115,15 +343,35 @@ public class HomeActivity extends Activity {
         if (isConnected) {
             if (clientThread.socket != null) {
                 try {
+
                     Log.i("INFO", "closing the socket");
                     clientThread.socket.close();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
-                            binding.tvNet.setText("Wifi");
-                            isConnected = false;
-                        }
+                    runOnUiThread(() -> {
+                        hideSoftKeyboard();
+                        binding.imgWifi.setBackground(null);
+                        binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
+                        binding.tvNet.setText(getResources().getString(R.string.wifi));
+
+                        final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_INDEFINITE);
+                        snackBar.setAction("Connect", v -> {
+                            snackBar.dismiss();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Connect();
+                                }
+                            },400);
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.btnGo.performClick();
+                                }
+                            },800);
+                        });
+                        snackBar.show();
+
+                        isConnected = false;
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -137,36 +385,44 @@ public class HomeActivity extends Activity {
                 }
             }
         }
-
         if (null != clientThread) {
             clientThread = null;
         }
     }
 
-    private void Connect() {
-        if (Utils.checkWifiOnAndConnected(this)) {
-            clientThread = null;
-            Thread thread;
-            clientThread = new ClientThread();
-            thread = new Thread(clientThread);
-            thread.start();
-            binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.wifi));
-            String ssid = Utils.getSSID(this);
-            binding.tvNet.setText(ssid);
-            isConnected = true;
-        } else {
-            Snackbar snackbar = Snackbar
-                    .make(binding.llParent, "Connect your Wifi First...", Snackbar.LENGTH_LONG)
-                    .setAction("CONNECT", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0);
-                        }
-                    });
-            snackbar.show();
-        }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    private void Connect() {
+        if (ContextCompat.checkSelfPermission(HomeActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+            if (Utils.checkWifiOnAndConnected(this)) {
+                String ssid = Utils.getCurrentSsid(this);
+                if(ssid.toLowerCase().contains("neurotech"))
+                {
+                    clientThread = null;
+                    Thread thread;
+                    clientThread = new ClientThread();
+                    thread = new Thread(clientThread);
+                    thread.start();
+                    binding.imgWifi.setBackground(null);
+                    binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.wifi));
+
+                    ssid=ssid.replaceAll("^\"|\"$", "");
+                    binding.tvNet.setText(ssid);
+                    isConnected = true;
+                }
+            } else {
+                Snackbar snackbar = Snackbar
+                        .make(binding.llParent, "Connect your Wifi Please", Snackbar.LENGTH_LONG)
+                        .setAction("SETTING", view -> startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0));
+                        snackbar.show();
+            }
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 555);
+        }
+    }
 
     private void setId(String str_id) {
 
@@ -193,12 +449,14 @@ public class HomeActivity extends Activity {
             ID = result_id;
             if (null != clientThread) {
                 clientThread.sendMessage(msg);
-                // RESPONSE = 1;
+                writeID=true;
             }
         } catch (Exception e) {
+            Disconnect();
             Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+        hideSoftKeyboard();
     }
 
     private void save() {
@@ -242,6 +500,191 @@ public class HomeActivity extends Activity {
         }
     }
 
+    @Override
+    public void setNewId(final String str_id) {
+
+        try {
+            String new_id = Integer.toString(Integer.valueOf(str_id), 16);
+            new_id = new_id.toUpperCase();
+            new_id = appendZeros(new_id, 2);
+
+            byte fcode = 0x06;
+            byte raw_id2 = 0x06;
+            byte[] msg2 = new byte[4];
+            msg2[0] = fcode;
+            msg2[2] = raw_id2;
+
+            byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
+            byte[] msg3 = hexStringToByteArray(new_id);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(msg1);
+            outputStream.write(msg2);
+            outputStream.write(msg3);
+            byte[] msg = outputStream.toByteArray();
+
+            if (null != clientThread) {
+                clientThread.sendMessage(msg);
+                ID = new_id;
+                final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle(getResources().getString(R.string.neurotech));
+                alertDialog.setMessage(getResources().getString(R.string.loading));
+                alertDialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        alertDialog.dismiss();
+                        binding.edtId.setText(str_id);
+                        setId(str_id);
+                    }
+                }, 2000);
+            }
+        } catch (Exception e) {
+            Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void closeBottomSheet() {
+        bottomSheet.dismiss(true);
+    }
+
+    private void onGotFocusDisplay1(boolean isFocus) {
+        binding.edtDisplay1.setEnabled(true);
+        binding.edtDisplay1.setClickable(true);
+        binding.edtDisplay1.requestFocus();
+        writeID=false;
+        binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
+        binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+
+        if(isFocus){
+            requestFocus=1;
+            requestWrite=0;
+            final String display1 = binding.edtDisplay1.getText().toString().trim();
+            sendDisplayMsg(display1, (byte) 0x09, (byte) 0x01);
+            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay1));
+        }
+
+
+    }
+    private void onGotFocusDisplay2(boolean isFocus) {
+        binding.edtDisplay2.setEnabled(true);
+        binding.edtDisplay2.setClickable(true);
+        binding.edtDisplay2.requestFocus();
+        writeID=false;
+        binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
+        binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+
+        if(isFocus){
+            requestFocus=2;
+            requestWrite=0;
+            final String display2 = binding.edtDisplay2.getText().toString().trim();
+            sendDisplayMsg(display2, (byte) 0x09, (byte) 0x02);
+            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay2));
+        }
+    }
+
+    private void onGotFocusDisplay3(boolean isFocus) {
+        binding.edtDisplay3.setEnabled(true);
+        binding.edtDisplay3.setClickable(true);
+        binding.edtDisplay3.requestFocus();
+        writeID=false;
+        binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
+        binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        if(isFocus){
+            requestFocus=3;
+            requestWrite=0;
+            final String display3 = binding.edtDisplay3.getText().toString().trim();
+            sendDisplayMsg(display3, (byte) 0x09, (byte) 0x03);
+            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay3));
+        }
+    }
+
+    private void onGotFocusDisplay4(boolean isFocus) {
+        binding.edtDisplay4.setEnabled(true);
+        binding.edtDisplay4.setClickable(true);
+        binding.edtDisplay4.requestFocus();
+        writeID=false;
+        binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
+        binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        if(isFocus){
+            requestFocus=4;
+            requestWrite=0;
+            final String display4 = binding.edtDisplay4.getText().toString().trim();
+            sendDisplayMsg(display4, (byte) 0x09, (byte) 0x04);
+            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay4));
+        }
+    }
+
+    private void onGotFocusDisplay5(boolean isFocus) {
+        binding.edtDisplay5.setEnabled(true);
+        binding.edtDisplay5.setClickable(true);
+        binding.edtDisplay5.requestFocus();
+        writeID=false;
+        binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+        binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
+
+        if(isFocus){
+            requestFocus=5;
+            requestWrite=0;
+            final String display5 = binding.edtDisplay5.getText().toString().trim();
+            sendDisplayMsg(display5, (byte) 0x09, (byte) 0x05);
+            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay5));
+        }
+    }
+
+    private void onLostFocusDisplay1() {
+        requestWrite=1;
+        requestFocus=0;
+        String display1 = binding.edtDisplay1.getText().toString().trim();
+        sendDisplayMsg(display1, (byte) 0x06, (byte) 0x01);
+    }
+
+    private void onLostFocusDisplay2() {
+        requestWrite=2;
+        requestFocus=0;
+        String display2 = binding.edtDisplay2.getText().toString().trim();
+        sendDisplayMsg(display2, (byte) 0x06, (byte) 0x02);
+    }
+
+    private void onLostFocusDisplay3() {
+        requestWrite=3;
+        requestFocus=0;
+        String display3 = binding.edtDisplay3.getText().toString().trim();
+        sendDisplayMsg(display3, (byte) 0x06, (byte) 0x03);
+    }
+
+    private void onLostFocusDisplay4() {
+        requestWrite=4;
+        requestFocus=0;
+        String display4 = binding.edtDisplay4.getText().toString().trim();
+        sendDisplayMsg(display4, (byte) 0x06, (byte) 0x04);
+    }
+
+    private void onLostFocusDisplay5() {
+        requestWrite=5;
+        requestFocus=0;
+        String display5 = binding.edtDisplay5.getText().toString().trim();
+        sendDisplayMsg(display5, (byte) 0x06, (byte) 0x05);
+    }
+
     private void sendDisplayMsg(String display, byte fcode, byte num) {
         try {
             if (!display.isEmpty()) {
@@ -256,18 +699,35 @@ public class HomeActivity extends Activity {
                 msg2[2] = num;
                 byte[] msg3 = hexStringToByteArray(result);
 
+                String num1=result.substring(0,2);
+                String num2=result.substring(2);
+                int sum=  Integer.parseInt(num1, 16)+Integer.parseInt(num2, 16);
+
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 outputStream.write(msg1);
                 outputStream.write(msg2);
                 outputStream.write(msg3);
+                if(sum!=0){
+                    byte[] msg4 =hexStringToByteArray(Integer.toHexString(sum));
+                    outputStream.write(msg4);
+                }
+                if(outputStream1.toString().equals(outputStream.toString())){
+                    disConnectCount++;
+                }else{
+                    outputStream1=outputStream;
+                }
 
                 byte[] msg = outputStream.toByteArray();
-
                 if (null != clientThread) {
+                    if(disConnectCount>5){
+                      Disconnect();
+                      return;
+                    }
                     clientThread.sendMessage(msg);
                 }
             }
         } catch (Exception e) {
+            Disconnect();
             e.printStackTrace();
         }
     }
@@ -281,19 +741,19 @@ public class HomeActivity extends Activity {
         public void run() {
 
             try {
-
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
                 socket = new Socket(serverAddr, SERVERPORT);
                 is = new DataInputStream(socket.getInputStream());
                 byte[] buffer = new byte[1024];
                 int read;
-                Log.e(TAG, "server ip: " + SERVER_IP);
-
+                String ack_msg = "";
                 while ((read = is.read(buffer)) != -1) {
+
+                    ack_msg = new String(buffer, 0, read);
+                    Log.e(TAG, "ack from server: " + ack_msg);
                     Log.e(TAG, "message from server: " + bytesToHex(buffer));
+
                     String result = bytesToHex(buffer);
-                    Log.e(TAG, "Result: " + result);
-                    Log.e(TAG, "ID: " + ID);
                     String id = result.substring(0, 2);
                     String display1 = "", display2 = "", display3 = "", display4 = "", display5 = "";
                     if (ID.equalsIgnoreCase(id)) {
@@ -308,47 +768,139 @@ public class HomeActivity extends Activity {
                         display5 = result.substring(22, 26);
                         final int d5 = Integer.parseInt(display5, 16);
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
-                                binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
-                                binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
-                                binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
-                                binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
-                            }
+                        runOnUiThread(() -> {
+                            binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
+                            binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
+                            binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
+                            binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
+                            binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
                         });
+                    }
+
+                    Log.d(TAG,"read command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus+" ack_msg: "+ack_msg +" writeID: "+writeID);
+                    if(!writeID){
+                        if(requestWrite!=0 && requestFocus==0){
+                            Log.d(TAG,"write command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
+
+                            if(requestWrite == 1 && !ack_msg.equals("11")){
+                                requestWrite=0;
+                                onLostFocusDisplay1();
+                            }else{
+                                runOnUiThread(() -> {
+                                    binding.edtDisplay1.setEnabled(false);
+                                    binding.edtDisplay1.setClickable(false);
+                                    binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                });
+                            }
+
+                            if(requestWrite==2 && !ack_msg.equals("12")){
+                                requestWrite=0;
+                                onLostFocusDisplay2();
+                            }else{
+                                runOnUiThread(() -> {
+                                   binding.edtDisplay2.setEnabled(false);
+                                   binding.edtDisplay2.setClickable(false);
+                                    binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                 });
+                            }
+
+                            if(requestWrite==3 && !ack_msg.equals("13")){
+                                requestWrite=0;
+                                onLostFocusDisplay3();
+                            }else{
+                                runOnUiThread(() -> {
+                                    binding.edtDisplay3.setEnabled(false);
+                                    binding.edtDisplay3.setClickable(false);
+                                    binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                 });
+                            }
+
+                           if(requestWrite==4 && !ack_msg.equals("14")){
+                                requestWrite=0;
+                                onLostFocusDisplay4();
+                            }else{
+                               runOnUiThread(() -> {
+                                   binding.edtDisplay4.setEnabled(false);
+                                   binding.edtDisplay4.setClickable(false);
+                                   binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                               });
+
+
+                           }
+
+                           if(requestWrite==5 && !ack_msg.equals("15")){
+                                requestWrite=0;
+                                onLostFocusDisplay5();
+                            }else{
+                               runOnUiThread(() -> {
+                                   binding.edtDisplay5.setEnabled(false);
+                                   binding.edtDisplay5.setClickable(false);
+                                   binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                               });
+                           }
+                        }
+
+                        if(!ack_msg.equals(String.valueOf(requestFocus)) && requestWrite==0 && requestFocus!=0){
+                            Log.d(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
+                            if(requestFocus==1){
+                                requestFocus=0;
+                                onGotFocusDisplay1(true);
+                            }else if(requestFocus==2){
+                                requestFocus=0;
+                                onGotFocusDisplay2(true);
+                            }else if(requestFocus==3){
+                                requestFocus=0;
+                                onGotFocusDisplay3(true);
+                            } else if(requestFocus==4){
+                                requestFocus=0;
+                                onGotFocusDisplay4(true);
+                            }else if(requestFocus==5){
+                                requestFocus=0;
+                                onGotFocusDisplay5(true);
+                            }
+                        }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
-                        binding.tvNet.setText("Wifi");
-                        isConnected = false;
-                    }
+                runOnUiThread(() -> {
+                    hideSoftKeyboard();
+
+                    final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_INDEFINITE);
+                    snackBar.setAction("Connect", v -> {
+                        snackBar.dismiss();
+
+                        runOnUiThread(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Connect();
+                                binding.btnGo.performClick();
+                            }
+                        });
+                    });
+                    snackBar.show();
+                    binding.imgWifi.setBackground(null);
+                    binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
+                    binding.tvNet.setText(getResources().getString(R.string.wifi));
+                    isConnected = false;
                 });
-                Log.e(TAG, "Exception:");
+                Log.e(TAG, "Exception:"+e.getMessage());
             }
         }
 
 
         void sendMessage(final byte[] message) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (null != socket) {
-                            Log.e(TAG, "sendMessage: " + Arrays.toString(message));
-                            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                            out.write(message);
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception: " + e.getMessage());
-                        e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    if (null != socket) {
+                        Log.e(TAG, "sendMessage: " + Arrays.toString(message));
+                        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                        out.write(message);
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception: " + e.getMessage());
+                    e.printStackTrace();
+                    Disconnect();
                 }
             }).start();
         }
