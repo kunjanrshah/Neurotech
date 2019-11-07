@@ -50,6 +50,9 @@ public class SimpleCustomBottomSheet extends BaseBottomSheet {
         Button btnCancel=view.findViewById(R.id.btnCancel);
         Button btnChange=view.findViewById(R.id.btnChange);
 
+        edtPass.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        edtPass.setSelection(edtId.getText().length());
+
         edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         edtId.setSelection(edtId.getText().length());
 
@@ -62,6 +65,7 @@ public class SimpleCustomBottomSheet extends BaseBottomSheet {
             if (pass1.equalsIgnoreCase(getResources().getString(R.string.change_id_password))) {
                 String str = edtId.getText().toString().trim();
                 ichangeId.setNewId(str);
+                ichangeId.closeBottomSheet();
             } else {
                 Toast.makeText(hostActivity, "Invalid Password!", Toast.LENGTH_SHORT).show();
             }

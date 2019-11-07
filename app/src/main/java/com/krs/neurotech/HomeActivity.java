@@ -80,7 +80,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     //ByteArrayOutputStream outputStream1=null;
     private KeyboardVisibilityListener keyboardVisibilityListener;
     private boolean isKeyboardVisible=false;
-    private int mInterval = 2500;
+    private int mInterval = 2000;
     private Handler mHandler;
 
     @Override
@@ -154,7 +154,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                     if(s.length()==5 && isOnTextChanged1 && !writeID) {
                         if(!isDuplicate1.equals(s.toString())){
-                            Log.d(TAG,"display1: "+s);
+                            Log.e(TAG,"display1: "+s);
                             isDuplicate1=s.toString();
                             isOnTextChanged1 = false;
                             startRepeatingTask1();
@@ -180,7 +180,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged2  && !writeID){
                     if(!isDuplicate2.equals(s.toString())){
-                        Log.d(TAG,"display2: "+s);
+                        Log.e(TAG,"display2: "+s);
                         isDuplicate2=s.toString();
                         isOnTextChanged2 = false;
                         startRepeatingTask2();
@@ -206,7 +206,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged3  && !writeID){
                     if(!isDuplicate3.equals(s.toString())){
-                        Log.d(TAG,"display3: "+s);
+                        Log.e(TAG,"display3: "+s);
                         isDuplicate3=s.toString();
                         isOnTextChanged3 = false;
                         startRepeatingTask3();
@@ -232,7 +232,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged4  && !writeID){
                     if(!isDuplicate4.equals(s.toString())){
-                        Log.d(TAG,"display4: "+s);
+                        Log.e(TAG,"display4: "+s);
                         isDuplicate4=s.toString();
                         isOnTextChanged4 = false;
                         startRepeatingTask4();
@@ -258,7 +258,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
                 if(s.length()==5 && isOnTextChanged5  && !writeID){
                     if(!isDuplicate5.equals(s.toString())){
-                        Log.d(TAG,"display5: "+s);
+                        Log.e(TAG,"display5: "+s);
                         isDuplicate5=s.toString();
                         isOnTextChanged5 = false;
                         startRepeatingTask5();
@@ -324,36 +324,60 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             binding.edtId.setTextColor(getResources().getColor(android.R.color.black));
             String str_id = binding.edtId.getText().toString().trim();
             if (str_id.length() != 0) {
-                setId(str_id);
+                setId(str_id,(byte)0x03);
             }
         });
 
         binding.imgPrev.setOnClickListener(v -> {
+
             String id = binding.edtId.getText().toString().trim();
             if (!id.isEmpty()) {
                 int id1 = Integer.parseInt(id);
                 if (id1 > 0) {
+                    setId("" + id1,(byte)0x04);
                     id1--;
-                    binding.edtId.setText("" + id1);
-                    setId("" + id1);
+                    final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getResources().getString(R.string.neurotech));
+                    alertDialog.setMessage(getResources().getString(R.string.loading));
+                    alertDialog.show();
+                    int finalId = id1;
+                    new Handler().postDelayed(() -> {
+                        alertDialog.dismiss();
+                        binding.edtId.setText("" + finalId);
+                        setId("" + finalId,(byte)0x03);
+                    }, 2000);
                 }
             }
         });
 
         binding.imgNext.setOnClickListener(v -> {
+
             String id = binding.edtId.getText().toString().trim();
             if (!id.isEmpty()) {
                 int id1 = Integer.parseInt(id);
                 if (id1 > 0) {
+                    setId("" + id1,(byte)0x04);
                     id1++;
-                    binding.edtId.setText("" + id1);
-                    setId("" + id1);
+                    final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getResources().getString(R.string.neurotech));
+                    alertDialog.setMessage(getResources().getString(R.string.loading));
+                    alertDialog.show();
+                    int finalId = id1;
+                    new Handler().postDelayed(() -> {
+                        alertDialog.dismiss();
+                        binding.edtId.setText("" + finalId);
+                        setId("" + finalId,(byte)0x03);
+                    }, 2000);
                 }
             }
+
         });
 
       Connect();
     }
+
 
 
     public void hideSoftKeyboard() {
@@ -390,7 +414,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             if (clientThread.socket != null) {
                 try {
 
-                    Log.i("INFO", "closing the socket");
+                    Log.e("INFO", "closing the socket");
                     clientThread.socket.close();
                     runOnUiThread(() -> {
                         hideSoftKeyboard();
@@ -403,8 +427,22 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                             snackBar.dismiss();
                         });
                         snackBar.show();
-
                         isConnected = false;
+                        if(mStatusChecker1!=null){
+                            mHandler.removeCallbacks(mStatusChecker1);
+                        }
+                        if(mStatusChecker2!=null){
+                            mHandler.removeCallbacks(mStatusChecker2);
+                        }
+                        if(mStatusChecker3!=null){
+                            mHandler.removeCallbacks(mStatusChecker3);
+                        }
+                        if(mStatusChecker4!=null){
+                            mHandler.removeCallbacks(mStatusChecker4);
+                        }
+                        if(mStatusChecker5!=null){
+                            mHandler.removeCallbacks(mStatusChecker5);
+                        }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -452,14 +490,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         }
     }
 
-    private void setId(String str_id) {
+    private void setId(String str_id,byte fcode) {
 
         try {
             str_id = Integer.toString(Integer.valueOf(str_id), 16);
             str_id = str_id.toUpperCase();
             String result_id = appendZeros(str_id, 2);
 
-            byte fcode = 0x03;
+         //   byte fcode = 0x03;
             byte eadd2 = 0x06;
 
             byte[] msg1 = hexStringToByteArray(result_id);
@@ -480,7 +518,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                 writeID=true;
             }
         } catch (Exception e) {
-            Disconnect();
+           // Disconnect();
             Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
@@ -564,7 +602,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     public void run() {
                         alertDialog.dismiss();
                         binding.edtId.setText(str_id);
-                        setId(str_id);
+                        setId(str_id,(byte)0x03);
                     }
                 }, 2000);
             }
@@ -576,7 +614,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     @Override
     public void onKeyboardVisibilityChanged(boolean keyboardVisible) {
         isKeyboardVisible=keyboardVisible;
-        Log.d(TAG,"keyboardVisible: "+keyboardVisible);
+        Log.e(TAG,"keyboardVisible: "+keyboardVisible);
     }
     @Override
     public void closeBottomSheet() {
@@ -744,7 +782,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     writeToDisplay1();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker1, mInterval);
+                if(count1<5){
+                    mHandler.postDelayed(mStatusChecker1, mInterval);
+                }
             }
         }
     };
@@ -769,7 +809,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     writeToDisplay2();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker2, mInterval);
+                if(count2<5){
+                    mHandler.postDelayed(mStatusChecker2, mInterval);
+                }
             }
         }
     };
@@ -794,7 +836,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     writeToDisplay3();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker3, mInterval);
+                if(count3<5){
+                    mHandler.postDelayed(mStatusChecker3, mInterval);
+                }
             }
         }
     };
@@ -819,7 +863,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     writeToDisplay4();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker4, mInterval);
+                if(count4<5){
+                    mHandler.postDelayed(mStatusChecker4, mInterval);
+                }
             }
         }
     };
@@ -844,7 +890,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     writeToDisplay5();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker5, mInterval);
+                if(count5<5){
+                    mHandler.postDelayed(mStatusChecker5, mInterval);
+                }
             }
         }
     };
@@ -899,7 +947,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                 }
             }
         } catch (Exception e) {
-            Disconnect();
+           // Disconnect();
             e.printStackTrace();
         }
     }
@@ -949,7 +997,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         });
                     }
 
-                    Log.d(TAG,"read command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus+" ack_msg: "+ack_msg +" writeID: "+writeID);
+                    Log.e(TAG,"read command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus+" ack_msg: "+ack_msg +" writeID: "+writeID);
                     try{
                         if(!writeID){
                             if(requestWrite!=0 && requestFocus==0){
@@ -1021,7 +1069,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                             }
 
                             if(!ack_msg.equals(String.valueOf(requestFocus)) && requestWrite==0 && requestFocus!=0){
-                                Log.d(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
+                                Log.e(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
                                 if(requestFocus==1){
                                     requestFocus=0;
                                     focusToDisplay1(true);
@@ -1074,7 +1122,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                 } catch (Exception e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
                     e.printStackTrace();
-                    Disconnect();
+                  //  Disconnect();
                 }
             }).start();
         }
