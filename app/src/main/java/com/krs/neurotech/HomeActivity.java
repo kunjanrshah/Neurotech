@@ -37,7 +37,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.TimerTask;
 
 import dmax.dialog.SpotsDialog;
 
@@ -67,14 +66,18 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     boolean isOnTextChanged4 = false;
     boolean isOnTextChanged5 = false;
     private boolean writeID=false;
-    int disConnectCount=0;
+    //int disConnectCount=0;
     int count1=0;
+    int count2=0;
+    int count3=0;
+    int count4=0;
+    int count5=0;
     private String isDuplicate1="";
     private String isDuplicate2="";
     private String isDuplicate3="";
     private String isDuplicate4="";
     private String isDuplicate5="";
-    ByteArrayOutputStream outputStream1=null;
+    //ByteArrayOutputStream outputStream1=null;
     private KeyboardVisibilityListener keyboardVisibilityListener;
     private boolean isKeyboardVisible=false;
     private int mInterval = 2500;
@@ -97,7 +100,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
         sharedPreferences = getSharedPreferences(getString(R.string.pref_key), MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        outputStream1 = new ByteArrayOutputStream();
+        //outputStream1 = new ByteArrayOutputStream();
         String pass = sharedPreferences.getString(getResources().getString(R.string.pass_key_sp), "");
 
         if (pass.isEmpty()) {
@@ -105,6 +108,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             startActivity(intent);
             finish();
         }
+
+       mHandler = new Handler();
        keyboardVisibilityListener=this;
        Utils.setKeyboardVisibilityListener(this,keyboardVisibilityListener);
        binding = DataBindingUtil.setContentView(this,R.layout.activity_homepage);
@@ -152,8 +157,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                             Log.d(TAG,"display1: "+s);
                             isDuplicate1=s.toString();
                             isOnTextChanged1 = false;
-                            mHandler = new Handler();
-                            startRepeatingTask();
+                            startRepeatingTask1();
                         }
                     }
                 }
@@ -179,7 +183,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         Log.d(TAG,"display2: "+s);
                         isDuplicate2=s.toString();
                         isOnTextChanged2 = false;
-                        runOnUiThread(() -> writeToDisplay2());
+                        startRepeatingTask2();
                     }
 
                 }
@@ -205,7 +209,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         Log.d(TAG,"display3: "+s);
                         isDuplicate3=s.toString();
                         isOnTextChanged3 = false;
-                        runOnUiThread(() -> writeToDisplay3());
+                        startRepeatingTask3();
                     }
 
                 }
@@ -231,7 +235,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         Log.d(TAG,"display4: "+s);
                         isDuplicate4=s.toString();
                         isOnTextChanged4 = false;
-                        runOnUiThread(() -> writeToDisplay4());
+                        startRepeatingTask4();
                     }
 
                 }
@@ -257,7 +261,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         Log.d(TAG,"display5: "+s);
                         isDuplicate5=s.toString();
                         isOnTextChanged5 = false;
-                        runOnUiThread(() -> writeToDisplay5());
+                        startRepeatingTask5();
                     }
 
                 }
@@ -397,8 +401,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_LONG);
                         snackBar.setAction("OK", v -> {
                             snackBar.dismiss();
-                            /*new Handler().postDelayed(() -> Connect(),400);
-                            new Handler().postDelayed(() -> binding.btnGo.performClick(),800);*/
                         });
                         snackBar.show();
 
@@ -585,7 +587,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.edtDisplay1.setEnabled(true);
         binding.edtDisplay1.setClickable(true);
         isDuplicate1="";
-        disConnectCount=0;
+      //  disConnectCount=0;
         binding.edtDisplay1.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
@@ -597,6 +599,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if(isFocus){
             requestFocus=1;
             requestWrite=0;
+            count1=0;
             final String display1 = binding.edtDisplay1.getText().toString().trim();
             sendDisplayMsg(display1, (byte) 0x09, (byte) 0x01);
             if(!isKeyboardVisible){
@@ -608,7 +611,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.edtDisplay2.setEnabled(true);
         binding.edtDisplay2.setClickable(true);
         isDuplicate2="";
-        disConnectCount=0;
+     //   disConnectCount=0;
         binding.edtDisplay2.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -620,6 +623,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if(isFocus){
             requestFocus=2;
             requestWrite=0;
+            count2=0;
             final String display2 = binding.edtDisplay2.getText().toString().trim();
             sendDisplayMsg(display2, (byte) 0x09, (byte) 0x02);
             if(!isKeyboardVisible){
@@ -631,7 +635,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.edtDisplay3.setEnabled(true);
         binding.edtDisplay3.setClickable(true);
         isDuplicate3="";
-        disConnectCount=0;
+       // disConnectCount=0;
         binding.edtDisplay3.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -642,6 +646,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if(isFocus){
             requestFocus=3;
             requestWrite=0;
+            count3=0;
             final String display3 = binding.edtDisplay3.getText().toString().trim();
             sendDisplayMsg(display3, (byte) 0x09, (byte) 0x03);
             if(!isKeyboardVisible){
@@ -653,7 +658,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.edtDisplay4.setEnabled(true);
         binding.edtDisplay4.setClickable(true);
         isDuplicate4="";
-        disConnectCount=0;
+      //  disConnectCount=0;
         binding.edtDisplay4.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -663,6 +668,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
         if(isFocus){
             requestFocus=4;
+            count4=0;
             requestWrite=0;
             final String display4 = binding.edtDisplay4.getText().toString().trim();
             sendDisplayMsg(display4, (byte) 0x09, (byte) 0x04);
@@ -675,7 +681,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         binding.edtDisplay5.setEnabled(true);
         binding.edtDisplay5.setClickable(true);
         isDuplicate5="";
-        disConnectCount=0;
+      //  disConnectCount=0;
         binding.edtDisplay5.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -687,6 +693,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if(isFocus){
             requestFocus=5;
             requestWrite=0;
+            count5=0;
             final String display5 = binding.edtDisplay5.getText().toString().trim();
             sendDisplayMsg(display5, (byte) 0x09, (byte) 0x05);
             if(!isKeyboardVisible){
@@ -725,29 +732,129 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         sendDisplayMsg(display5, (byte) 0x06, (byte) 0x05);
     }
 
-    Runnable mStatusChecker = new Runnable() {
+    Runnable mStatusChecker1 = new Runnable() {
         @Override
         public void run() {
             try {
                 if(count1==5){
-                    stopRepeatingTask();
-                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    stopRepeatingTask1();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
                 }else{
                     count1++;
                     writeToDisplay1();
                 }
             } finally {
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                mHandler.postDelayed(mStatusChecker1, mInterval);
             }
         }
     };
 
-    void startRepeatingTask() {
-        mStatusChecker.run();
+    void startRepeatingTask1() {
+        mStatusChecker1.run();
     }
 
-    void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
+    void stopRepeatingTask1() {
+        mHandler.removeCallbacks(mStatusChecker1);
+    }
+
+    Runnable mStatusChecker2 = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if(count2==5){
+                    stopRepeatingTask2();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                }else{
+                    count2++;
+                    writeToDisplay2();
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker2, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask2() {
+        mStatusChecker2.run();
+    }
+
+    void stopRepeatingTask2() {
+        mHandler.removeCallbacks(mStatusChecker2);
+    }
+
+    Runnable mStatusChecker3 = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if(count3==5){
+                    stopRepeatingTask3();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                }else{
+                    count3++;
+                    writeToDisplay3();
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker3, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask3() {
+        mStatusChecker3.run();
+    }
+
+    void stopRepeatingTask3() {
+        mHandler.removeCallbacks(mStatusChecker3);
+    }
+
+    Runnable mStatusChecker4 = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if(count4==5){
+                    stopRepeatingTask4();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                }else{
+                    count4++;
+                    writeToDisplay4();
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker4, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask4() {
+        mStatusChecker4.run();
+    }
+
+    void stopRepeatingTask4() {
+        mHandler.removeCallbacks(mStatusChecker4);
+    }
+
+    Runnable mStatusChecker5 = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if(count5==5){
+                    stopRepeatingTask5();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                }else{
+                    count5++;
+                    writeToDisplay5();
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker5, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask5() {
+        mStatusChecker5.run();
+    }
+
+    void stopRepeatingTask5() {
+        mHandler.removeCallbacks(mStatusChecker5);
     }
 
     private void sendDisplayMsg(String display, byte fcode, byte num) {
@@ -776,18 +883,18 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     byte[] msg4 =hexStringToByteArray(Integer.toHexString(sum));
                     outputStream.write(msg4);
                 }
-                if(outputStream1.toString().equals(outputStream.toString())){
+                /*if(outputStream1.toString().equals(outputStream.toString())){
                     disConnectCount++;
                 }else{
                     outputStream1=outputStream;
-                }
+                }*/
 
                 byte[] msg = outputStream.toByteArray();
                 if (null != clientThread) {
-                    if(disConnectCount>5){
+                   /* if(disConnectCount>5){
                       Disconnect();
                       return;
-                    }
+                    }*/
                     clientThread.sendMessage(msg);
                 }
             }
@@ -796,8 +903,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             e.printStackTrace();
         }
     }
-
-
 
     private class ClientThread implements Runnable {
 
@@ -852,71 +957,65 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                                     StringBuffer c = new StringBuffer(ack_msg);
                                     ack_msg=c.reverse().toString();
                                 }
-                                stopRepeatingTask();
-                               if(requestWrite == 1 ){
-                                   requestWrite=0;
-                                   stopRepeatingTask();
+                                if(requestWrite == 1 ){
                                    String d1= binding.edtDisplay1.getText().toString().replace(".","");
                                    if(ack_msg.equals(d1)){
+                                       requestWrite=0;
+                                       stopRepeatingTask1();
                                        runOnUiThread(() -> {
                                            binding.edtDisplay1.setEnabled(false);
                                            binding.edtDisplay1.setClickable(false);
                                            binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
                                        });
-                                   }else {
-                                       writeToDisplay1();
                                    }
-                               }
+                                }
+
                                 if(requestWrite == 2 ){
-                                    requestWrite=0;
                                     String d2= binding.edtDisplay2.getText().toString().replace(".","");
                                     if(ack_msg.equals(d2)){
+                                        requestWrite=0;
+                                        stopRepeatingTask2();
                                         runOnUiThread(() -> {
                                             binding.edtDisplay2.setEnabled(false);
                                             binding.edtDisplay2.setClickable(false);
                                             binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
                                         });
-                                    }else {
-                                        writeToDisplay2();
                                     }
                                 }
                                 if(requestWrite == 3 ){
-                                    requestWrite=0;
                                     String d3= binding.edtDisplay3.getText().toString().replace(".","");
                                     if(ack_msg.equals(d3)){
+                                        requestWrite=0;
+                                        stopRepeatingTask3();
                                         runOnUiThread(() -> {
                                             binding.edtDisplay3.setEnabled(false);
                                             binding.edtDisplay3.setClickable(false);
                                             binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
                                         });
-                                    }else {
-                                        writeToDisplay3();
                                     }
                                 }
                                 if(requestWrite == 4 ){
-                                    requestWrite=0;
                                     String d4= binding.edtDisplay4.getText().toString().replace(".","");
                                     if(ack_msg.equals(d4)){
+                                        requestWrite=0;
+                                        stopRepeatingTask4();
                                         runOnUiThread(() -> {
                                             binding.edtDisplay4.setEnabled(false);
                                             binding.edtDisplay4.setClickable(false);
                                             binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
                                         });
-                                    }else {
-                                        writeToDisplay4();
                                     }
                                 }
                                 if(requestWrite == 5 ){
-                                    requestWrite=0;
                                     String d5= binding.edtDisplay5.getText().toString().replace(".","");
                                     if(ack_msg.equals(d5)){
+                                        requestWrite=0;
+                                        stopRepeatingTask5();
                                         runOnUiThread(() -> {
                                             binding.edtDisplay5.setEnabled(false);
                                             binding.edtDisplay5.setClickable(false);
                                             binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
                                         });
-                                    }else {
-                                        writeToDisplay5();
                                     }
                                 }
                             }
