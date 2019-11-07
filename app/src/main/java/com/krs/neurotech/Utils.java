@@ -1,5 +1,6 @@
 package com.krs.neurotech;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -7,6 +8,8 @@ import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 class Utils {
 
@@ -59,6 +62,30 @@ class Utils {
             }
 
         return data;
+    }
+
+    public static void setKeyboardVisibilityListener(Activity activity, KeyboardVisibilityListener keyboardVisibilityListener) {
+        View contentView = activity.findViewById(android.R.id.content);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private int mPreviousHeight;
+
+            @Override
+            public void onGlobalLayout() {
+                int newHeight = contentView.getHeight();
+                if (mPreviousHeight != 0) {
+                    if (mPreviousHeight > newHeight) {
+                        // Height decreased: keyboard was shown
+                        keyboardVisibilityListener.onKeyboardVisibilityChanged(true);
+                    } else if (mPreviousHeight < newHeight) {
+                        // Height increased: keyboard was hidden
+                        keyboardVisibilityListener.onKeyboardVisibilityChanged(false);
+                    } else {
+                        // No change
+                    }
+                }
+                mPreviousHeight = newHeight;
+            }
+        });
     }
 
     static String appendZeros(String str, int count) {

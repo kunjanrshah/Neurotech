@@ -47,7 +47,7 @@ import static com.krs.neurotech.Utils.hexStringToByteArray;
 import static java.lang.String.format;
 
 
-public class HomeActivity extends Activity implements SimpleCustomBottomSheet.IchangeId{
+public class HomeActivity extends Activity implements SimpleCustomBottomSheet.IchangeId,KeyboardVisibilityListener{
 
     private final int SERVERPORT = 1234;
     private final String SERVER_IP = "192.168.4.1";
@@ -68,12 +68,17 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     boolean isOnTextChanged5 = false;
     private boolean writeID=false;
     int disConnectCount=0;
+    int count1=0;
     private String isDuplicate1="";
     private String isDuplicate2="";
     private String isDuplicate3="";
     private String isDuplicate4="";
     private String isDuplicate5="";
     ByteArrayOutputStream outputStream1=null;
+    private KeyboardVisibilityListener keyboardVisibilityListener;
+    private boolean isKeyboardVisible=false;
+    private int mInterval = 2500;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +105,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             startActivity(intent);
             finish();
         }
-
+       keyboardVisibilityListener=this;
+       Utils.setKeyboardVisibilityListener(this,keyboardVisibilityListener);
        binding = DataBindingUtil.setContentView(this,R.layout.activity_homepage);
        binding.imgWifi.setBackground(null);
        binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
@@ -140,11 +146,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             public void afterTextChanged(Editable s) {
 
                 if(getCurrentFocus()==binding.edtDisplay1){
+
                     if(s.length()==5 && isOnTextChanged1 && !writeID) {
                         if(!isDuplicate1.equals(s.toString())){
+                            Log.d(TAG,"display1: "+s);
                             isDuplicate1=s.toString();
                             isOnTextChanged1 = false;
-                            runOnUiThread(() -> writeToDisplay1());
+                            mHandler = new Handler();
+                            startRepeatingTask();
                         }
                     }
                 }
@@ -165,9 +174,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(s.length()==5 && isOnTextChanged2 && !writeID){
-                    isOnTextChanged1 = false;
-                    runOnUiThread(() -> writeToDisplay2());
+                if(s.length()==5 && isOnTextChanged2  && !writeID){
+                    if(!isDuplicate2.equals(s.toString())){
+                        Log.d(TAG,"display2: "+s);
+                        isDuplicate2=s.toString();
+                        isOnTextChanged2 = false;
+                        runOnUiThread(() -> writeToDisplay2());
+                    }
+
                 }
             }
         });
@@ -186,9 +200,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(s.length()==5 && isOnTextChanged3 && !writeID){
-                    isOnTextChanged3=false;
-                    runOnUiThread(() -> writeToDisplay3());
+                if(s.length()==5 && isOnTextChanged3  && !writeID){
+                    if(!isDuplicate3.equals(s.toString())){
+                        Log.d(TAG,"display3: "+s);
+                        isDuplicate3=s.toString();
+                        isOnTextChanged3 = false;
+                        runOnUiThread(() -> writeToDisplay3());
+                    }
+
                 }
             }
         });
@@ -207,9 +226,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(s.length()==5 && isOnTextChanged4 && !writeID){
-                    isOnTextChanged4=false;
-                    runOnUiThread(() -> writeToDisplay4());
+                if(s.length()==5 && isOnTextChanged4  && !writeID){
+                    if(!isDuplicate4.equals(s.toString())){
+                        Log.d(TAG,"display4: "+s);
+                        isDuplicate4=s.toString();
+                        isOnTextChanged4 = false;
+                        runOnUiThread(() -> writeToDisplay4());
+                    }
+
                 }
             }
         });
@@ -228,9 +252,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(s.length()==5 && isOnTextChanged5 && !writeID){
-                    isOnTextChanged5=false;
-                    runOnUiThread(() -> writeToDisplay5());
+                if(s.length()==5 && isOnTextChanged5  && !writeID){
+                    if(!isDuplicate5.equals(s.toString())){
+                        Log.d(TAG,"display5: "+s);
+                        isDuplicate5=s.toString();
+                        isOnTextChanged5 = false;
+                        runOnUiThread(() -> writeToDisplay5());
+                    }
+
                 }
             }
         });
@@ -365,11 +394,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
                         binding.tvNet.setText(getResources().getString(R.string.wifi));
 
-                        final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_INDEFINITE);
-                        snackBar.setAction("Connect", v -> {
+                        final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_LONG);
+                        snackBar.setAction("OK", v -> {
                             snackBar.dismiss();
-                            new Handler().postDelayed(() -> Connect(),400);
-                            new Handler().postDelayed(() -> binding.btnGo.performClick(),800);
+                            /*new Handler().postDelayed(() -> Connect(),400);
+                            new Handler().postDelayed(() -> binding.btnGo.performClick(),800);*/
                         });
                         snackBar.show();
 
@@ -542,7 +571,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             e.printStackTrace();
         }
     }
-
+    @Override
+    public void onKeyboardVisibilityChanged(boolean keyboardVisible) {
+        isKeyboardVisible=keyboardVisible;
+        Log.d(TAG,"keyboardVisible: "+keyboardVisible);
+    }
     @Override
     public void closeBottomSheet() {
         bottomSheet.dismiss(true);
@@ -551,6 +584,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     private void focusToDisplay1(boolean isFocus) {
         binding.edtDisplay1.setEnabled(true);
         binding.edtDisplay1.setClickable(true);
+        isDuplicate1="";
+        disConnectCount=0;
         binding.edtDisplay1.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_light_blue));
@@ -564,14 +599,16 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestWrite=0;
             final String display1 = binding.edtDisplay1.getText().toString().trim();
             sendDisplayMsg(display1, (byte) 0x09, (byte) 0x01);
-            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay1));
+            if(!isKeyboardVisible){
+                runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay1));
+            }
         }
-
-
     }
     private void focusToDisplay2(boolean isFocus) {
         binding.edtDisplay2.setEnabled(true);
         binding.edtDisplay2.setClickable(true);
+        isDuplicate2="";
+        disConnectCount=0;
         binding.edtDisplay2.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -585,12 +622,16 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestWrite=0;
             final String display2 = binding.edtDisplay2.getText().toString().trim();
             sendDisplayMsg(display2, (byte) 0x09, (byte) 0x02);
-            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay2));
+            if(!isKeyboardVisible){
+                runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay2));
+            }
         }
     }
     private void focusToDisplay3(boolean isFocus) {
         binding.edtDisplay3.setEnabled(true);
         binding.edtDisplay3.setClickable(true);
+        isDuplicate3="";
+        disConnectCount=0;
         binding.edtDisplay3.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -603,12 +644,16 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestWrite=0;
             final String display3 = binding.edtDisplay3.getText().toString().trim();
             sendDisplayMsg(display3, (byte) 0x09, (byte) 0x03);
-            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay3));
+            if(!isKeyboardVisible){
+                runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay3));
+            }
         }
     }
     private void focusToDisplay4(boolean isFocus) {
         binding.edtDisplay4.setEnabled(true);
         binding.edtDisplay4.setClickable(true);
+        isDuplicate4="";
+        disConnectCount=0;
         binding.edtDisplay4.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -621,12 +666,16 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestWrite=0;
             final String display4 = binding.edtDisplay4.getText().toString().trim();
             sendDisplayMsg(display4, (byte) 0x09, (byte) 0x04);
-            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay4));
+            if(!isKeyboardVisible){
+                runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay4));
+            }
         }
     }
     private void focusToDisplay5(boolean isFocus) {
         binding.edtDisplay5.setEnabled(true);
         binding.edtDisplay5.setClickable(true);
+        isDuplicate5="";
+        disConnectCount=0;
         binding.edtDisplay5.requestFocus();
         writeID=false;
         binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
@@ -640,7 +689,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestWrite=0;
             final String display5 = binding.edtDisplay5.getText().toString().trim();
             sendDisplayMsg(display5, (byte) 0x09, (byte) 0x05);
-            runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay5));
+            if(!isKeyboardVisible){
+                runOnUiThread(() -> showSoftKeyboard(binding.edtDisplay5));
+            }
         }
     }
     private void writeToDisplay1() {
@@ -672,6 +723,31 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         requestFocus=0;
         String display5 = binding.edtDisplay5.getText().toString().trim();
         sendDisplayMsg(display5, (byte) 0x06, (byte) 0x05);
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if(count1==5){
+                    stopRepeatingTask();
+                    Toast.makeText(HomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }else{
+                    count1++;
+                    writeToDisplay1();
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     private void sendDisplayMsg(String display, byte fcode, byte num) {
@@ -721,6 +797,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         }
     }
 
+
+
     private class ClientThread implements Runnable {
 
         private Socket socket;
@@ -767,105 +845,113 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     }
 
                     Log.d(TAG,"read command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus+" ack_msg: "+ack_msg +" writeID: "+writeID);
-                    if(!writeID){
-                        if(requestWrite!=0 && requestFocus==0){
-                            Log.d(TAG,"write command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
-
-                            if(requestWrite == 1 && !ack_msg.equals("11")){
-                                requestWrite=0;
-                                writeToDisplay1();
-                            }else{
-                                runOnUiThread(() -> {
-                                    binding.edtDisplay1.setEnabled(false);
-                                    binding.edtDisplay1.setClickable(false);
-                                    binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
-                                });
+                    try{
+                        if(!writeID){
+                            if(requestWrite!=0 && requestFocus==0){
+                                if(!ack_msg.isEmpty()){
+                                    StringBuffer c = new StringBuffer(ack_msg);
+                                    ack_msg=c.reverse().toString();
+                                }
+                                stopRepeatingTask();
+                               if(requestWrite == 1 ){
+                                   requestWrite=0;
+                                   stopRepeatingTask();
+                                   String d1= binding.edtDisplay1.getText().toString().replace(".","");
+                                   if(ack_msg.equals(d1)){
+                                       runOnUiThread(() -> {
+                                           binding.edtDisplay1.setEnabled(false);
+                                           binding.edtDisplay1.setClickable(false);
+                                           binding.llDisplay1.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                       });
+                                   }else {
+                                       writeToDisplay1();
+                                   }
+                               }
+                                if(requestWrite == 2 ){
+                                    requestWrite=0;
+                                    String d2= binding.edtDisplay2.getText().toString().replace(".","");
+                                    if(ack_msg.equals(d2)){
+                                        runOnUiThread(() -> {
+                                            binding.edtDisplay2.setEnabled(false);
+                                            binding.edtDisplay2.setClickable(false);
+                                            binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                        });
+                                    }else {
+                                        writeToDisplay2();
+                                    }
+                                }
+                                if(requestWrite == 3 ){
+                                    requestWrite=0;
+                                    String d3= binding.edtDisplay3.getText().toString().replace(".","");
+                                    if(ack_msg.equals(d3)){
+                                        runOnUiThread(() -> {
+                                            binding.edtDisplay3.setEnabled(false);
+                                            binding.edtDisplay3.setClickable(false);
+                                            binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                        });
+                                    }else {
+                                        writeToDisplay3();
+                                    }
+                                }
+                                if(requestWrite == 4 ){
+                                    requestWrite=0;
+                                    String d4= binding.edtDisplay4.getText().toString().replace(".","");
+                                    if(ack_msg.equals(d4)){
+                                        runOnUiThread(() -> {
+                                            binding.edtDisplay4.setEnabled(false);
+                                            binding.edtDisplay4.setClickable(false);
+                                            binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                        });
+                                    }else {
+                                        writeToDisplay4();
+                                    }
+                                }
+                                if(requestWrite == 5 ){
+                                    requestWrite=0;
+                                    String d5= binding.edtDisplay5.getText().toString().replace(".","");
+                                    if(ack_msg.equals(d5)){
+                                        runOnUiThread(() -> {
+                                            binding.edtDisplay5.setEnabled(false);
+                                            binding.edtDisplay5.setClickable(false);
+                                            binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
+                                        });
+                                    }else {
+                                        writeToDisplay5();
+                                    }
+                                }
                             }
 
-                            if(requestWrite==2 && !ack_msg.equals("12")){
-                                requestWrite=0;
-                                writeToDisplay2();
-                            }else{
-                                runOnUiThread(() -> {
-                                   binding.edtDisplay2.setEnabled(false);
-                                   binding.edtDisplay2.setClickable(false);
-                                    binding.llDisplay2.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
-                                 });
+                            if(!ack_msg.equals(String.valueOf(requestFocus)) && requestWrite==0 && requestFocus!=0){
+                                Log.d(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
+                                if(requestFocus==1){
+                                    requestFocus=0;
+                                    focusToDisplay1(true);
+                                }else if(requestFocus==2){
+                                    requestFocus=0;
+                                    focusToDisplay2(true);
+                                }else if(requestFocus==3){
+                                    requestFocus=0;
+                                    focusToDisplay3(true);
+                                } else if(requestFocus==4){
+                                    requestFocus=0;
+                                    focusToDisplay4(true);
+                                }else if(requestFocus==5){
+                                    requestFocus=0;
+                                    focusToDisplay5(true);
+                                }
                             }
-
-                            if(requestWrite==3 && !ack_msg.equals("13")){
-                                requestWrite=0;
-                                writeToDisplay3();
-                            }else{
-                                runOnUiThread(() -> {
-                                    binding.edtDisplay3.setEnabled(false);
-                                    binding.edtDisplay3.setClickable(false);
-                                    binding.llDisplay3.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
-                                 });
-                            }
-
-                           if(requestWrite==4 && !ack_msg.equals("14")){
-                                requestWrite=0;
-                                writeToDisplay4();
-                            }else{
-                               runOnUiThread(() -> {
-                                   binding.edtDisplay4.setEnabled(false);
-                                   binding.edtDisplay4.setClickable(false);
-                                   binding.llDisplay4.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
-                               });
-
-
-                           }
-
-                           if(requestWrite==5 && !ack_msg.equals("15")){
-                                requestWrite=0;
-                                writeToDisplay5();
-                            }else{
-                               runOnUiThread(() -> {
-                                   binding.edtDisplay5.setEnabled(false);
-                                   binding.edtDisplay5.setClickable(false);
-                                   binding.llDisplay5.setBackground(getResources().getDrawable(R.drawable.round_corner_white));
-                               });
-                           }
                         }
-
-                        if(!ack_msg.equals(String.valueOf(requestFocus)) && requestWrite==0 && requestFocus!=0){
-                            Log.d(TAG,"focus command: requestWrite: "+requestWrite+" requestFocus: "+requestFocus);
-                            if(requestFocus==1){
-                                requestFocus=0;
-                                focusToDisplay1(true);
-                            }else if(requestFocus==2){
-                                requestFocus=0;
-                                focusToDisplay2(true);
-                            }else if(requestFocus==3){
-                                requestFocus=0;
-                                focusToDisplay3(true);
-                            } else if(requestFocus==4){
-                                requestFocus=0;
-                                focusToDisplay4(true);
-                            }else if(requestFocus==5){
-                                requestFocus=0;
-                                focusToDisplay5(true);
-                            }
-                        }
+                    }catch (Exception e){
+                        Toast.makeText(HomeActivity.this, "Something wrong happen!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> {
                     hideSoftKeyboard();
-
-                    final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_INDEFINITE);
-                    snackBar.setAction("Connect", v -> {
+                    final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_LONG);
+                    snackBar.setAction("OK", v -> {
                         snackBar.dismiss();
-
-                        runOnUiThread(new TimerTask() {
-                            @Override
-                            public void run() {
-                                Connect();
-                                binding.btnGo.performClick();
-                            }
-                        });
                     });
                     snackBar.show();
                     binding.imgWifi.setBackground(null);
