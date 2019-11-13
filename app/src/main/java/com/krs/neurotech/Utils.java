@@ -53,9 +53,9 @@ class Utils {
 
     static byte[] hexStringToByteArray(String s) {
         int len = s.length();
-        if(len==1){
+        if(len%2!=0){
             s="0"+s;
-            len=2;
+            len=len+1;
         }
         byte[] data= new byte[len / 2];
         for (int i = 0; i < len; i += 2) {

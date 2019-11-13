@@ -4,11 +4,12 @@
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
     <string name="neurotech">NeuroTech</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Syncing...</string>
     <string name="pref_key">nerotech</string>
     <string name="pass_key_sp">password</string>
     <string name="login_password">ntech</string>
     <string name="change_id_password">1995</string>
     <string name="wifi">WiFi</string>
-    <string name="disconnected_because">Disconnected as something wrong happen</string>
+    <string name="disconnected_because">Disconnected as something went wrong</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>
