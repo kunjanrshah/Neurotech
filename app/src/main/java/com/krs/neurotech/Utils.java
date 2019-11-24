@@ -10,8 +10,17 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 class Utils {
+
+    public static SweetAlertDialog dialog = null;
 
     public static String getCurrentSsid(Context context) {
         String ssid = null;
@@ -38,6 +47,40 @@ class Utils {
         }
         return ssid;
     }
+
+    public static void startProgress(Activity context, String title, String message) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+            dialog=null;
+        }
+        dialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE).setContentText(message);
+        dialog.setCancelable(false);
+        dialog.setTitleText(title);
+        dialog.show();
+        hideSoftKeyboard(context);
+    }
+
+    public static void hideProgress(Activity activity) {
+        try {
+            if (dialog != null && dialog.isShowing()) dialog.cancel();
+            dialog = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            hideSoftKeyboard(activity);
+        }
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        if (activity != null) {
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (activity.getCurrentFocus() != null && inputManager != null) {
+                inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                inputManager.hideSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+    }
+
 
     static boolean checkWifiOnAndConnected(Context context) {
         WifiManager wifiMgr = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);

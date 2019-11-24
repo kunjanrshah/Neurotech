@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.arthurivanets.bottomsheet:bottomsheets-core:1.0.0"
+    implementation 'com.github.f0ris.sweetalert:library:1.5.1'
 }
 repositories {
     mavenCentral()

@@ -42,6 +42,7 @@ import dmax.dialog.SpotsDialog;
 import static com.krs.neurotech.Utils.appendZeros;
 import static com.krs.neurotech.Utils.bytesToHex;
 import static com.krs.neurotech.Utils.hexStringToByteArray;
+import static com.krs.neurotech.Utils.hideProgress;
 import static java.lang.String.format;
 
 
@@ -79,7 +80,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     //ByteArrayOutputStream outputStream1=null;
     private KeyboardVisibilityListener keyboardVisibilityListener;
     private boolean isKeyboardVisible = false;
-    private int mInterval = 2000;
+    private int mInterval = 3000;
     private Handler mHandler;
     Runnable mStatusChecker1 = new Runnable() {
         @Override
@@ -88,6 +89,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             try {
                 if(count1 < 5) {
                     count1++;
+                    if(count1==1){
+                        Utils.startProgress(HomeActivity.this,getResources().getString(R.string.app_name),"Loading...");
+                    }
                     writeToDisplay1();
                     mHandler.postDelayed(mStatusChecker1, mInterval);
                 } else {
@@ -106,6 +110,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             try {
                 if(count2 < 5) {
                     count2++;
+                    if(count2==1){
+                        Utils.startProgress(HomeActivity.this,getResources().getString(R.string.app_name),"Loading...");
+                    }
                     writeToDisplay2();
                     mHandler.postDelayed(mStatusChecker2, mInterval);
                 } else {
@@ -124,6 +131,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             try {
                 if(count3 < 5) {
                     count3++;
+                    if(count3==1){
+                        Utils.startProgress(HomeActivity.this,getResources().getString(R.string.app_name),"Loading...");
+                    }
                     writeToDisplay3();
                     mHandler.postDelayed(mStatusChecker3, mInterval);
                 } else {
@@ -142,6 +152,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             try {
                 if(count4 < 5) {
                     count4++;
+                    if(count4==1){
+                        Utils.startProgress(HomeActivity.this,getResources().getString(R.string.app_name),"Loading...");
+                    }
                     writeToDisplay4();
                     mHandler.postDelayed(mStatusChecker4, mInterval);
                 } else {
@@ -160,6 +173,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             try {
                 if(count5 < 5) {
                     count5++;
+                    if(count5==1){
+                        Utils.startProgress(HomeActivity.this,getResources().getString(R.string.app_name),"Loading...");
+                    }
                     writeToDisplay5();
                     mHandler.postDelayed(mStatusChecker5, mInterval);
                 } else {
@@ -464,7 +480,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         Connect();
     }
 
-    private void AlertChangeId(final int id) {
+   private void AlertChangeId(final int id) {
         final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
         alertDialog.setCancelable(false);
         alertDialog.setTitle(getResources().getString(R.string.neurotech));
@@ -477,12 +493,12 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         }, 2000);
     }
 
-    public void hideSoftKeyboard() {
+   /* public void hideSoftKeyboard() {
         if (getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
-    }
+    }*/
 
     public void showSoftKeyboard(EditText editText) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -501,7 +517,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     }
 
     private void showCustomBottomSheet() {
-        hideSoftKeyboard();
+        Utils.hideSoftKeyboard(this);
         bottomSheet = new SimpleCustomBottomSheet(this);
         bottomSheet.show();
     }
@@ -514,7 +530,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                     Log.e("INFO", "closing the socket");
                     clientThread.socket.close();
                     runOnUiThread(() -> {
-                        hideSoftKeyboard();
+                        Utils.hideSoftKeyboard(this);
                         binding.imgWifi.setBackground(null);
                         binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
                         binding.tvNet.setText(getResources().getString(R.string.wifi));
@@ -617,7 +633,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             showSnackBar(getResources().getString(R.string.something_went_wrong));
             e.printStackTrace();
         }
-        hideSoftKeyboard();
+        Utils.hideSoftKeyboard(this);
     }
 
     private void save() {
@@ -734,7 +750,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestFocus = 1;
             requestWrite = 0;
             count1 = 0;
-            final String display1 = binding.edtDisplay1.getText().toString().trim();
+          //  hideProgress(this);
+            final String display1 = "1234";
             sendDisplayMsg(display1, (byte) 0x09, (byte) 0x01);
         } else {
             if (!isKeyboardVisible) {
@@ -760,7 +777,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestFocus = 2;
             requestWrite = 0;
             count2 = 0;
-            final String display2 = binding.edtDisplay2.getText().toString().trim();
+         //   hideProgress(this);
+            final String display2 = "1234";
             sendDisplayMsg(display2, (byte) 0x09, (byte) 0x02);
         } else {
             if (!isKeyboardVisible) {
@@ -784,7 +802,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestFocus = 3;
             requestWrite = 0;
             count3 = 0;
-            final String display3 = binding.edtDisplay3.getText().toString().trim();
+           // hideProgress(this);
+            final String display3 = "1234";
             sendDisplayMsg(display3, (byte) 0x09, (byte) 0x03);
         } else {
             if (!isKeyboardVisible) {
@@ -807,8 +826,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         if (isFocus) {
             requestFocus = 4;
             count4 = 0;
+          //  hideProgress(this);
             requestWrite = 0;
-            final String display4 = binding.edtDisplay4.getText().toString().trim();
+            final String display4 = "1234";
             sendDisplayMsg(display4, (byte) 0x09, (byte) 0x04);
         } else {
             if (!isKeyboardVisible) {
@@ -833,7 +853,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             requestFocus = 5;
             requestWrite = 0;
             count5 = 0;
-            final String display5 = binding.edtDisplay5.getText().toString().trim();
+            //hideProgress(this);
+            final String display5 = "1234";
             sendDisplayMsg(display5, (byte) 0x09, (byte) 0x05);
         } else {
             if (!isKeyboardVisible) {
@@ -883,8 +904,8 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
     void stopRepeatingTask1() {
         count1 = 0;
+        hideProgress(this);
         mHandler.removeCallbacks(mStatusChecker1);
-        hideSoftKeyboard();
     }
 
     void startRepeatingTask2() {
@@ -893,6 +914,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
     void stopRepeatingTask2() {
         count2 = 0;
+        hideProgress(this);
         mHandler.removeCallbacks(mStatusChecker2);
     }
 
@@ -902,6 +924,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
     void stopRepeatingTask3() {
         count3 = 0;
+        hideProgress(this);
         mHandler.removeCallbacks(mStatusChecker3);
     }
 
@@ -911,6 +934,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
     void stopRepeatingTask4() {
         count4 = 0;
+        hideProgress(this);
         mHandler.removeCallbacks(mStatusChecker4);
     }
 
@@ -920,6 +944,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
     void stopRepeatingTask5() {
         count5 = 0;
+        hideProgress(this);
         mHandler.removeCallbacks(mStatusChecker5);
     }
 
@@ -947,7 +972,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                 outputStream.write(msg3);
                 /*byte[] msg4 = hexStringToByteArray(Integer.toHexString(sum));
                 outputStream.write(msg4);*/
-
                 byte[] msg = outputStream.toByteArray();
                 if (null != clientThread) {
                     clientThread.sendMessage(msg);
@@ -961,7 +985,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     }
 
     private void showSnackBar(String msg){
-        hideSoftKeyboard();
+        Utils.hideSoftKeyboard(this);
         final Snackbar snackBar = Snackbar.make(binding.llParent, msg, Snackbar.LENGTH_LONG);
         snackBar.setAction("OK", v -> {
             snackBar.dismiss();
@@ -1006,11 +1030,11 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                         final int d5 = Integer.parseInt(display5, 16);
 
                         runOnUiThread(() -> {
-                            binding.edtDisplay1.setText(MessageFormat.format("{0}", d1));
-                            binding.edtDisplay2.setText(MessageFormat.format("{0}", d2));
-                            binding.edtDisplay3.setText(MessageFormat.format("{0}", d3));
-                            binding.edtDisplay4.setText(MessageFormat.format("{0}", d4));
-                            binding.edtDisplay5.setText(MessageFormat.format("{0}", d5));
+                            binding.edtDisplay1.setText(Utils.appendZeros(String.valueOf(d1),4));
+                            binding.edtDisplay2.setText(Utils.appendZeros(String.valueOf(d2),4));
+                            binding.edtDisplay3.setText(Utils.appendZeros(String.valueOf(d3),4));
+                            binding.edtDisplay4.setText(Utils.appendZeros(String.valueOf(d4),4));
+                            binding.edtDisplay5.setText(Utils.appendZeros(String.valueOf(d5),4));
                         });
                     }
 
@@ -1112,7 +1136,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> {
-                    hideSoftKeyboard();
+                    Utils.hideSoftKeyboard(HomeActivity.this);
                     final Snackbar snackBar = Snackbar.make(binding.llParent, getResources().getString(R.string.disconnected_because), Snackbar.LENGTH_LONG);
                     snackBar.setAction("OK", v -> {
                         snackBar.dismiss();
