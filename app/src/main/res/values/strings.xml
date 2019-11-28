@@ -12,4 +12,5 @@
     <string name="wifi">WiFi</string>
     <string name="disconnected_because">Disconnected as something went wrong</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="not_connected">Wifi not connected</string>
 </resources>

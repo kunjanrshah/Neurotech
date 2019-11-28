@@ -57,6 +57,9 @@
             android:digits="0123456789"
             android:inputType="number"
             android:textSize="18sp"
+            android:singleLine="true"
+            android:nextFocusForward="@+id/edtPass"
+            android:imeOptions="actionNext"
             android:paddingLeft="20dp"
             android:layout_height="50dp"/>
 
@@ -64,7 +67,8 @@
             android:id="@+id/edtPass"
             android:fontFamily="@font/montserrat_medium"
             android:hint="Password"
-            android:inputType="textVisiblePassword"
+            android:singleLine="true"
+            android:inputType="number"
             android:textSize="18sp"
             android:paddingLeft="20dp"
             android:layout_marginTop="20dp"

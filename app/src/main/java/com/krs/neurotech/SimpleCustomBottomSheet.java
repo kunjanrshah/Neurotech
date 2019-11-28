@@ -3,6 +3,7 @@ package com.krs.neurotech;
 import android.app.Activity;
 import android.content.Context;
 import android.text.InputFilter;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -52,9 +53,16 @@ public class SimpleCustomBottomSheet extends BaseBottomSheet {
 
         edtPass.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
         edtPass.setSelection(edtId.getText().length());
-
+        edtPass.setImeActionLabel("Change ", KeyEvent.KEYCODE_ENTER);
         edtId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         edtId.setSelection(edtId.getText().length());
+        edtPass.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                btnChange.performClick();
+                return true;
+            }
+            return false;
+        });
 
         btnCancel.setOnClickListener(v -> {
             ichangeId.closeBottomSheet();
@@ -63,6 +71,7 @@ public class SimpleCustomBottomSheet extends BaseBottomSheet {
         btnChange.setOnClickListener(v -> {
             String pass1 = edtPass.getText().toString().trim();
             if (pass1.equalsIgnoreCase(getResources().getString(R.string.change_id_password))) {
+                Utils.hideSoftKeyboard(hostActivity);
                 String str = edtId.getText().toString().trim();
                 ichangeId.setNewId(str);
                 ichangeId.closeBottomSheet();

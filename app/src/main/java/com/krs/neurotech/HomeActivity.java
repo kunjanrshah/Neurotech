@@ -1,7 +1,6 @@
 package com.krs.neurotech;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,6 +17,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -34,7 +34,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import dmax.dialog.SpotsDialog;
@@ -43,7 +42,6 @@ import static com.krs.neurotech.Utils.appendZeros;
 import static com.krs.neurotech.Utils.bytesToHex;
 import static com.krs.neurotech.Utils.hexStringToByteArray;
 import static com.krs.neurotech.Utils.hideProgress;
-import static java.lang.String.format;
 
 
 public class HomeActivity extends Activity implements SimpleCustomBottomSheet.IchangeId, KeyboardVisibilityListener {
@@ -56,7 +54,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     boolean isOnTextChanged3 = false;
     boolean isOnTextChanged4 = false;
     boolean isOnTextChanged5 = false;
-    //int disConnectCount=0;
     int count1 = 0;
     int count2 = 0;
     int count3 = 0;
@@ -77,12 +74,12 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
     private String isDuplicate3 = "";
     private String isDuplicate4 = "";
     private String isDuplicate5 = "";
-    //ByteArrayOutputStream outputStream1=null;
     private KeyboardVisibilityListener keyboardVisibilityListener;
     private boolean isKeyboardVisible = false;
     private int mInterval = 3000;
     private Handler mHandler;
-    Runnable mStatusChecker1 = new Runnable() {
+
+   Runnable mStatusChecker1 = new Runnable() {
         @Override
         public void run() {
             String display = binding.edtDisplay1.getText().toString();
@@ -205,7 +202,6 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
 
         sharedPreferences = getSharedPreferences(getString(R.string.pref_key), MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        //outputStream1 = new ByteArrayOutputStream();
         String pass = sharedPreferences.getString(getResources().getString(R.string.pass_key_sp), "");
 
         if (pass.isEmpty()) {
@@ -217,6 +213,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         mHandler = new Handler();
         keyboardVisibilityListener = this;
         Utils.setKeyboardVisibilityListener(this, keyboardVisibilityListener);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_homepage);
         binding.imgWifi.setBackground(null);
         binding.imgWifi.setBackground(getResources().getDrawable(R.drawable.no_wifi));
@@ -226,7 +223,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             if (!str_id.isEmpty()) {
                 int id1 = Integer.parseInt(str_id);
                 if (id1 > 0) {
-                    setId("" + id1, (byte) 0x04);
+                    setId("" + id1, (byte) 0x04,false);
                 }
             }
             editor.clear();
@@ -437,15 +434,13 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             binding.edtId.setTextColor(getResources().getColor(android.R.color.black));
             String str_id = binding.edtId.getText().toString().trim();
             if (!str_id.isEmpty()) {
-                int id1 = Integer.parseInt(str_id);
-                if (id1 > 0) {
-                    String id2 = sharedPreferences.getString("id", "");
-                    if (!id2.isEmpty()) {
-                        setId("" + id2, (byte) 0x04);
+                int id_int = Integer.parseInt(str_id);
+                if (id_int > 0) {
+                    String stored_id = sharedPreferences.getString("id", "");
+                    if (!stored_id.isEmpty()) {
+                        setId("" + stored_id, (byte) 0x04,false);
                     }
-                    editor.putString("id", str_id);
-                    editor.commit();
-                    AlertChangeId(id1);
+                    AlertChangeId(id_int);
                 }
             }
         });
@@ -456,7 +451,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             if (!id.isEmpty()) {
                 int id1 = Integer.parseInt(id);
                 if (id1 > 0) {
-                    setId("" + id1, (byte) 0x04);
+                    setId("" + id1, (byte) 0x04,false);
                     id1--;
                     AlertChangeId(id1);
                 }
@@ -469,7 +464,7 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             if (!id.isEmpty()) {
                 int id1 = Integer.parseInt(id);
                 if (id1 > 0) {
-                    setId("" + id1, (byte) 0x04);
+                    setId("" + id1, (byte) 0x04,false);
                     id1++;
                     AlertChangeId(id1);
                 }
@@ -489,7 +484,9 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         new Handler().postDelayed(() -> {
             alertDialog.dismiss();
             binding.edtId.setText("" + id);
-            setId("" + id, (byte) 0x03);
+            editor.putString("id", String.valueOf(id));
+            editor.commit();
+            setId("" + id, (byte) 0x03,false);
         }, 2000);
     }
 
@@ -602,16 +599,14 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
         }
     }
 
-    private void setId(String str_id, byte fcode) {
+    private void setId(String str_id, byte fcode,boolean isChanged) {
 
         try {
             str_id = Integer.toString(Integer.valueOf(str_id), 16);
             str_id = str_id.toUpperCase();
             String result_id = appendZeros(str_id, 2);
 
-            //   byte fcode = 0x03;
             byte eadd2 = 0x06;
-
             byte[] msg1 = hexStringToByteArray(result_id);
 
             byte[] msg2 = new byte[5];
@@ -628,53 +623,17 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             if (null != clientThread) {
                 clientThread.sendMessage(msg);
                 writeID = true;
+                if(isChanged){
+                    runOnUiThread(() -> {
+                        Toast.makeText(HomeActivity.this, "ID Changed Successfully", Toast.LENGTH_SHORT).show();
+                    });
+                }
             }
         } catch (Exception e) {
             showSnackBar(getResources().getString(R.string.something_went_wrong));
             e.printStackTrace();
         }
         Utils.hideSoftKeyboard(this);
-    }
-
-    private void save() {
-        byte fcode = 0x06;
-        byte raw_id2 = 0x07;
-        byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
-        byte[] msg2 = new byte[4];
-        msg2[0] = fcode;
-        msg2[2] = raw_id2;
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            outputStream.write(msg1);
-            outputStream.write(msg2);
-            outputStream.write(msg1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        byte[] msg = outputStream.toByteArray();
-
-        if (null != clientThread) {
-            clientThread.sendMessage(msg);
-            final AlertDialog alertDialog = new SpotsDialog.Builder().setContext(this).build();
-            alertDialog.setCancelable(false);
-            alertDialog.setTitle(getResources().getString(R.string.neurotech));
-            alertDialog.setMessage(getResources().getString(R.string.loading));
-            alertDialog.show();
-            new Handler().postDelayed(new Runnable() {
-                @SuppressLint("DefaultLocale")
-                @Override
-                public void run() {
-                    alertDialog.dismiss();
-                    String str = binding.edtId.getText().toString().trim();
-                    if (!str.isEmpty()) {
-                        int i = Integer.parseInt(str) + 1;
-                        binding.edtId.setText(format("%d", i));
-                    }
-                }
-            }, 2000);
-        }
     }
 
     @Override
@@ -685,13 +644,18 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
             new_id = new_id.toUpperCase();
             new_id = appendZeros(new_id, 2);
 
+            String stored_id = sharedPreferences.getString("id", "");
+            byte[] msg1= new byte[1];;
+            if (!stored_id.isEmpty()) {
+                msg1 = hexStringToByteArray(appendZeros(stored_id, 2));
+            }
+
             byte fcode = 0x06;
             byte raw_id2 = 0x06;
             byte[] msg2 = new byte[4];
             msg2[0] = fcode;
             msg2[2] = raw_id2;
 
-            byte[] msg1 = hexStringToByteArray(appendZeros(ID, 2));
             byte[] msg3 = hexStringToByteArray(new_id);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -708,14 +672,15 @@ public class HomeActivity extends Activity implements SimpleCustomBottomSheet.Ic
                 alertDialog.setTitle(getResources().getString(R.string.neurotech));
                 alertDialog.setMessage(getResources().getString(R.string.loading));
                 alertDialog.show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        alertDialog.dismiss();
-                        binding.edtId.setText(str_id);
-                        setId(str_id, (byte) 0x03);
-                    }
+                new Handler().postDelayed(() -> {
+                    alertDialog.dismiss();
+                    binding.edtId.setText(str_id);
+                    editor.putString("id", str_id);
+                    editor.commit();
+                    setId(str_id, (byte) 0x03,true);
                 }, 2000);
+            }else {
+                showSnackBar(getResources().getString(R.string.not_connected));
             }
         } catch (Exception e) {
             showSnackBar(getResources().getString(R.string.something_went_wrong));
